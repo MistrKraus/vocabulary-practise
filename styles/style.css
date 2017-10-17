@@ -1,0 +1,53 @@
+body {
+    font-family: "Calibri";
+    font-size: 1.6em;
+    background-color: lightyellow;
+}
+
+tableMenu {
+    float: left;
+    width: 150px;
+    background-color: lightslategray;
+    text-align: right;
+    alignment: right;
+}
+
+.menu {
+    float: left;
+    text-align: right;
+}
+
+.lista a {
+    color: black;
+    padding: 5px;
+    padding-top: 2px;
+    text-decoration-color: transparent;
+}
+
+.bordered {
+    border: solid 1px black;
+}
+
+.verticalLineRight {
+    border-right: 1px solid #000099;
+    padding-right: 10px;
+}
+
+.verticalLineLeft {
+    border-left: 1px solid #000099;
+    padding-left: 10px;
+}
+
+.horizontalLine {
+    color: #000099;
+    width: 55%;
+}
+
+h1 {
+    padding: 10px;
+}
+
+a:hover::before {
+    content:  "| ";
+    font-weight: bold;
+}
