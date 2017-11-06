@@ -2,22 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: kraus
- * Date: 09.10.2017
- * Time: 19:32
+ * Date: 05.11.2017
+ * Time: 14:12
  */
+
 class Db
 {
     /**
      * Databázové spojení
      * @var
      */
-    private static $spojeni;
+    private static $connection;
 
     /**
      * Výchozí nastavení ovladače
      * @var array
      */
-    private static $nastaveni = array(
+    private static $settings = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
         PDO::ATTR_EMULATE_PREPARES => false,
@@ -30,14 +31,14 @@ class Db
      * @param $heslo
      * @param $databaze
      */
-    public static function pripoj($host, $uzivatel, $heslo, $databaze)
+    public static function connect($host, $uzivatel, $heslo, $databaze)
     {
-        if (!isset(self::$spojeni)) {
-            self::$spojeni = @new PDO(
+        if (!isset(self::$connection)) {
+            self::$connection = @new PDO(
                 "mysql:host=$host;dbname=$databaze",
                 $uzivatel,
                 $heslo,
-                self::$nastaveni
+                self::$settings
             );
         }
     }
@@ -50,7 +51,7 @@ class Db
      */
     public static function dotazJeden($dotaz, $parametry = array())
     {
-        $navrat = self::$spojeni->prepare($dotaz);
+        $navrat = self::$connection->prepare($dotaz);
         $navrat->execute($parametry);
         return $navrat->fetch(PDO::FETCH_ASSOC);
     }
@@ -63,7 +64,7 @@ class Db
      */
     public static function dotazVsechny($dotaz, $parametry = array())
     {
-        $navrat = self::$spojeni->prepare($dotaz);
+        $navrat = self::$connection->prepare($dotaz);
         $navrat->execute($parametry);
         return $navrat->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -90,9 +91,9 @@ class Db
      * @param array $parametry
      * @return mixed
      */
-    public static function dotaz($dotaz, $parametry = array())
+    public static function query($dotaz, $parametry = array())
     {
-        $navrat = self::$spojeni->prepare($dotaz);
+        $navrat = self::$connection->prepare($dotaz);
         $navrat->execute($parametry);
         return $navrat->rowCount();
     }
@@ -103,9 +104,9 @@ class Db
      * @param array $parametry
      * @return mixed
      */
-    public static function vloz($tabulka, $parametry = array())
+    public static function insert($tabulka, $parametry = array())
     {
-        return self::dotaz("INSERT INTO `$tabulka` (`" .
+        return self::query("INSERT INTO `$tabulka` (`" .
             implode('`, `', array_keys($parametry)) .
             "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)",
             array_values($parametry));
@@ -113,15 +114,15 @@ class Db
 
     /**
      * Změní řádek v tabulce tak, aby obsahoval data z asociativního pole
-     * @param $tabulka          //string tabulku s kterou se bude manipulovat
-     * @param array $hodnoty    //
-     * @param $podminka         //
-     * @param array $parametry  //
-     * @return mixed            //int počet ovlivněných řádek
+     * @param $tabulka
+     * @param array $hodnoty
+     * @param $podminka
+     * @param array $parametry
+     * @return mixed
      */
-    public static function zmen($tabulka, $hodnoty = array(), $podminka, $parametry = array())
+    public static function update($tabulka, $hodnoty = array(), $podminka, $parametry = array())
     {
-        return self::dotaz("UPDATE `$tabulka` SET `" .
+        return self::query("UPDATE `$tabulka` SET `" .
             implode('` = ?, `', array_keys($hodnoty)) .
             "` = ? " . $podminka,
             array_merge(array_values($hodnoty), $parametry));
@@ -133,6 +134,6 @@ class Db
      */
     public static function getLastId()
     {
-        return self::$spojeni->lastInsertId();
+        return self::$connection->lastInsertId();
     }
 }

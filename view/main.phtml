@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="cz" xmlns:https="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <link rel=stylesheet type="text/css" href="../styles/bootstrap-4.0.0-alpha.6/dist/css/bootstrap.css"/>
+    <link rel=stylesheet type="text/css" href="../styles/style.css"/>
+
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link rel=stylesheet type="text/css" href="../styles/style.css"/>
+
+    <title><?= $title ?></title>
+    <meta name="description" content="<?= $description ?>" />
+    <meta name="keywords" content="<?= $key_words ?>" />
+</head>
+<body>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="text-align: center">
+            <h1>Vocabulary Practice</h1>
+            <hr class="horizontalLine">
+        </div>
+        <div class="col-md-12"><br></div>
+        <div class="col-md-2 menu lista">
+            <div class="verticalLineRight"><a href="intro">Úvod</a></div>
+            <div class="verticalLineRight"><a href="vocabulary">Slovník</a></div>
+            <div class="verticalLineRight"><a href="vocabulary">Můj Slovník</a></div>
+            <div class="verticalLineRight"><a href="vocabulary">Procvičování</a></div>
+        </div>
+        <div class="col-md-8">
+            <?php foreach ($messages as $message) : ?>
+                <p class="zprava"><?= $message ?></p>
+            <?php endforeach ?>
+            <div>
+                <?php $this->controller->buildView(); ?>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="verticalLineLeft">Přihlášení</div>
+            <div class="verticalLineLeft">Registrace</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
