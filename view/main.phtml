@@ -5,17 +5,20 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-    <link rel=stylesheet type="text/css" href="../styles/bootstrap-4.0.0-alpha.6/dist/css/bootstrap.css"/>
-    <link rel=stylesheet type="text/css" href="../styles/style.css"/>
+    <link rel=stylesheet type="text/css" href="resources/styles/bootstrap-4.0.0-alpha.6/dist/css/bootstrap.css"/>
+    <link rel=stylesheet type="text/css" href="../resources/styles/style.css"/>
 
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <link rel=stylesheet type="text/css" href="../styles/style.css"/>
+    <link rel=stylesheet type="text/css" href="resources/styles/style.css"/>
 
     <title><?= $title ?></title>
     <meta name="description" content="<?= $description ?>" />
@@ -25,18 +28,26 @@
 <br>
 <div class="container">
     <div class="row">
-        <div class="col-md-12" style="text-align: center">
-            <h1>Vocabulary Practice</h1>
+        <div class="col-md-4 lista" style="text-align: right">
+            <h1><a href="intro">Vocabulary Practice</a></h1>
+            <!--<hr class="horizontalLine">-->
+        </div>
+        <div class="col-md-4" style="text-align: center">
+            <h1><?= $title ?></h1>
             <hr class="horizontalLine">
         </div>
+        <div class="col-md-4">
+            <br>
+        </div>
         <div class="col-md-12"><br></div>
-        <div class="col-md-2 menu lista">
+        <div class="col-md-2 menu lista leftMenuHover">
             <div class="verticalLineRight"><a href="intro">Úvod</a></div>
             <div class="verticalLineRight"><a href="vocabulary">Slovník</a></div>
-            <div class="verticalLineRight"><a href="vocabulary">Můj Slovník</a></div>
-            <div class="verticalLineRight"><a href="vocabulary">Procvičování</a></div>
+            <div class="verticalLineRight"><a href="practise">Procvičování</a></div>
+            <div class="verticalLineRight"><a href="myVocabulary">Můj Slovník</a></div>
+            <div class="verticalLineRight"><a href="extendVoc">Rozšířit Slovník</a></div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-8 content">
             <?php foreach ($messages as $message) : ?>
                 <p class="zprava"><?= $message ?></p>
             <?php endforeach ?>

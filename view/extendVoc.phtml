@@ -1,0 +1,63 @@
+<form method="POST">
+    <div class="col-md-12" align="center">Jazyk</div>
+    <div class="col-md-5" align="right">
+        <div>
+            <select id="langs1">
+                <?php foreach ($langs as $lang) : ?>
+                    <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+                <?php endforeach ?>
+                <option name="lang1" value="-1">Jiný</option>
+            </select>
+        </div>
+        <div>
+            <input name="newLang1" id="input1" type="text"/>
+        </div>
+        <script>
+            var langs1 = document.getElementById("langs1");
+            var input1 = document.getElementById("input1");
+            langs1.addEventListener("change", function () {
+                console.log(this.value == -1 ? "visible" : "hidden");
+                input1.style.visibility = this.value == -1 ? "visible" : "hidden";
+            });
+
+            input1.style.visibility = this.value == -1 ? "visible" : "hidden";
+        </script>
+    </div>
+    <div class="col-md-2" align="center">◄ | ►</div>
+    <div class="col-md-5" align="left">
+        <div>
+            <select id="langs2">
+                <?php foreach ($langs as $lang) : ?>
+                    <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+                <?php endforeach; ?>
+                <option name="lang2" value="-1">Jiný</option>
+            </select>
+        </div>
+        <div>
+            <input name="newLang2" id="input2" type="text">
+        </div>
+        <script>
+            var langs2 = document.getElementById("langs2");
+            var input2 = document.getElementById("input2");
+            langs2.addEventListener("change", function () {
+                console.log(this.value == -1 ? "visible" : "hidden");
+                input2.style.visibility = this.value == -1 ? "visible" : "hidden";
+            });
+
+            input2.style.visibility = this.value == -1 ? "visible" : "hidden";
+        </script>
+    </div>
+    <div class="col-md-12" align="center">Slovo</div>
+    <div class="col-md-5" align="right">
+        <input name="word1" type="text">
+    </div>
+    <div class="col-md-2" align="center">↔</div>
+    <div class="col-md-5" align="left">
+        <input name="word2" type="text">
+    </div>
+    <div class="col-md-10"></div>
+    <div class="col-md-2" align="right">
+        <input class="btn" type="submit" value="Přidat">
+    </div>
+    <?php //echo Langs::addLang("English"); ?>
+</form>

@@ -4,6 +4,30 @@ body {
     background-color: lightyellow;
 }
 
+h1 {
+    padding: 10px;
+    font-size: 2em;
+}
+
+input {
+    margin-top: 0.2em;
+}
+
+.btn {
+    margin-top: 0.2em;
+    font-size: 0.8em;
+}
+
+.leftMenuHover a:hover::before {
+    content:  "| ";
+    font-weight: bold;
+}
+
+.rightMenuHover a:hover::after {
+    content:  " |";
+    font-weight: bold;
+}
+
 tableMenu {
     float: left;
     width: 150px;
@@ -21,7 +45,7 @@ tableMenu {
     color: black;
     padding: 5px;
     padding-top: 2px;
-    text-decoration-color: transparent;
+    text-decoration: none;
 }
 
 .bordered {
@@ -40,14 +64,8 @@ tableMenu {
 
 .horizontalLine {
     color: #000099;
-    width: 55%;
 }
 
-h1 {
-    padding: 10px;
-}
+.content {
 
-a:hover::before {
-    content:  "| ";
-    font-weight: bold;
 }

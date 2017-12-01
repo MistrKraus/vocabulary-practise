@@ -38,7 +38,7 @@ class Db
                 "mysql:host=$host;dbname=$databaze",
                 $uzivatel,
                 $heslo,
-                self::$settings
+        self::$settings
             );
         }
     }
@@ -49,7 +49,7 @@ class Db
      * @param array $parametry
      * @return mixed
      */
-    public static function dotazJeden($dotaz, $parametry = array())
+    public static function getFirstRow($dotaz, $parametry = array())
     {
         $navrat = self::$connection->prepare($dotaz);
         $navrat->execute($parametry);
@@ -62,8 +62,7 @@ class Db
      * @param array $parametry
      * @return mixed
      */
-    public static function dotazVsechny($dotaz, $parametry = array())
-    {
+    public static function getAll($dotaz, $parametry = array()) {
         $navrat = self::$connection->prepare($dotaz);
         $navrat->execute($parametry);
         return $navrat->fetchAll(PDO::FETCH_ASSOC);
@@ -75,9 +74,9 @@ class Db
      * @param array $parametry
      * @return int
      */
-    public static function dotazSamotny($dotaz, $parametry = array())
+    public static function getFirst($dotaz, $parametry = array())
     {
-        $vysledek = self::dotazJeden($dotaz, $parametry);
+        $vysledek = self::getFirstRow($dotaz, $parametry);
         if ($vysledek) {
             $vysledek = array_values($vysledek);
             return $vysledek[0];

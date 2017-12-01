@@ -25,7 +25,7 @@ spl_autoload_register("autoloadFunkce");
 
 //$_SESSION['zprava'] = "Ahoj";
 
-//Db::connect("localhost", "root", "", "");
+Db::connect("localhost", "root", "", "VOCABULARY");
 
 $redirect = new RedirectController();
 $redirect->process(array($_SERVER['REQUEST_URI']));
