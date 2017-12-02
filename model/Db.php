@@ -111,6 +111,13 @@ class Db
             array_values($parametry));
     }
 
+    public static function insertGetId($tabulka, $id, $parametry = array()) {
+        return self::query("INSERT INTO `$tabulka` (`" .
+            implode('`, `', array_keys($parametry)) .
+            "`) OUTPUT INSERTED.". $id ." VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)",
+            array_values($parametry));
+    }
+
     /**
      * Změní řádek v tabulce tak, aby obsahoval data z asociativního pole
      * @param $tabulka

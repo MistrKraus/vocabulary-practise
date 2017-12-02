@@ -20,9 +20,14 @@ class Langs {
     }
 
     public static function getLangID($lang) {
-        $fromDb = Db::getFirst("SELECT FROM LANGUAGE WHERE lang = ?", array($lang));
+        $fromDb = Db::getFirstRow("SELECT id_lang FROM language WHERE lang=:lang",
+            array(':lang'=>$lang));
 
-        return $fromDb;
+//        foreach ($fromDb as $item) :
+//            return $item['id_lang'];
+//        endforeach;
+
+        return $fromDb['id_lang'];
     }
 
     public static function addLang($lang) {
@@ -30,7 +35,7 @@ class Langs {
 
         foreach ($fromDb as $item) {
             if ($item["lang"] == $lang)
-                return -1;
+                return $item["id_lang"];
         }
 
         return Db::insert("language", array('lang'=>$lang));

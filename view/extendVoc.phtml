@@ -2,7 +2,7 @@
     <div class="col-md-12" align="center">Jazyk</div>
     <div class="col-md-5" align="right">
         <div>
-            <select id="langs1">
+            <select name="langs1" id="langs1">
                 <?php foreach ($langs as $lang) : ?>
                     <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
                 <?php endforeach ?>
@@ -26,7 +26,7 @@
     <div class="col-md-2" align="center">◄ | ►</div>
     <div class="col-md-5" align="left">
         <div>
-            <select id="langs2">
+            <select name="langs2" id="langs2">
                 <?php foreach ($langs as $lang) : ?>
                     <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
                 <?php endforeach; ?>

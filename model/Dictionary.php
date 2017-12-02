@@ -2,28 +2,37 @@
 /**
  * Created by PhpStorm.
  * User: kraus
- * Date: 18.11.2017
- * Time: 22:24
+ * Date: 01.12.2017
+ * Time: 23:15
  */
 
 class Dictionary {
 
-    public static function getAllWords() {
-        $fromDb = Db::getAll("SELECT * FROM word", null);
-
-        return $fromDb;
+    public static function getAllTraslations() {
+        return Db::getAll("SELECT * word.word, language.lang FROM (('translation'
+            INNER JOIN word ON translation.word_id1 = word.word_id
+            INNER JOIN word ON translation.word_id2 = word.word_id", null);
+            //INNER JOIN language ON word.lang_id = language.id_lang", null);
     }
 
-    public static function getWordID($word, $langID) {
-        $fromDb = Db::getFirst("SELECT FROM word WHERE word=? AND lang_id=?",
-            array('word'=>$word, 'lang_id'=>$langID));
+    public static function getDictionary($lang1Id, $lang2Id) {
+        if ($lang1Id == $lang2Id)
+            return -1;
 
-        return $fromDb;
+        if ($lang1Id > $lang2Id) {
+            $temp = $lang1Id;
+            $lang1Id = $lang2Id;
+            $lang2Id = $temp;
+        }
+
+        return Db::getAll("SELECT * word.word, language.lang FROM 'translatin' WHERE word_id1=? AND word_id2=?",
+            array('word_id1'=>$lang1Id, 'word_id2'=>$lang2Id));
     }
 
-    public static function addWord($word, $langID) {
 
 
-        Db::insert("word", array('lang_id'=>$langID, 'word'=>$word));
+    public static function addTranslation($word1Id, $lang1Id, $word2Id, $lang2Id, $user) {
+        return $word1Id == $word2Id ? -1 : Db::insert("translation",
+            array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user));
     }
 }
