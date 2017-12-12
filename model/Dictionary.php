@@ -9,9 +9,8 @@
 class Dictionary {
 
     public static function getAllTraslations() {
-        return Db::getAll("SELECT * word.word, language.lang FROM (('translation'
-            INNER JOIN word ON translation.word_id1 = word.word_id
-            INNER JOIN word ON translation.word_id2 = word.word_id", null);
+        return Db::getAll("SELECT * FROM `translation`
+INNER JOIN (word INNER JOIN language ON language.id_lang=word.lang_id) ON translation.word_id1=word.id_word", null);
             //INNER JOIN language ON word.lang_id = language.id_lang", null);
     }
 

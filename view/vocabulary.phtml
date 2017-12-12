@@ -1,1 +1,20 @@
-Slovnik
+<table>
+    <thead>
+        <tr>
+            <?php foreach ($langs as $lang) :
+                if ($lang != null)?>
+                <th><?= $lang['lang']?></th>
+            <?php endforeach; ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($trans as $tran) : {
+            if ($tran != null) {?>
+        <tr>
+            <?php foreach ($langs as $lang) : ?>
+            <td><?= $tran[$lang['id_lang']] ?></td>
+            <?php endforeach;} }?>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
