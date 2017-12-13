@@ -9,6 +9,10 @@ h1 {
     font-size: 2em;
 }
 
+h2 {
+    text-align: center;
+}
+
 input {
     margin-top: 0.2em;
 }
@@ -46,6 +50,10 @@ tableMenu {
     padding: 5px;
     padding-top: 2px;
     text-decoration: none;
+}
+
+.textHref {
+    font-weight: bold;
 }
 
 .bordered {

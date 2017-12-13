@@ -7,6 +7,7 @@
  */
 
 session_start();
+$_SESSION['user_id'] = 0;
 
 mb_internal_encoding("UTF-8");
 
