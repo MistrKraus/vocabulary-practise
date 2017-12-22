@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="cz" xmlns:https="http://www.w3.org/1999/xhtml">
+<html lang="cz" xmlns:https="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <!-- Latest compiled and minified CSS -->
@@ -46,6 +47,9 @@
             <div class="verticalLineRight"><a href="practise">Procvičování</a></div>
             <div class="verticalLineRight"><a href="myVocabulary">Můj Slovník</a></div>
             <div class="verticalLineRight"><a href="extendVoc">Rozšířit Slovník</a></div>
+            <?php if (isset($_SESSION['user_position']) && $_SESSION['user_position'] == 1) { ?>
+                <div class="verticalLineRight"><a href="maintainVoc">Spravovat Slovník</a></div>
+            <?php } ?>
         </div>
         <div class="col-md-8 content">
             <?php foreach ($messages as $message) : ?>
@@ -56,8 +60,17 @@
             </div>
         </div>
         <div class="col-md-2 lista rightMenuHover">
-            <div class="verticalLineLeft"><a href="login">Přihlášení</a></div>
-            <div class="verticalLineLeft"><a href="registration">Registrace</a></div>
+            <form method="post" class="logout rightMenuHover">
+            <?php if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] == 0) {?>
+                <div class="verticalLineLeft"><input type="submit" name="login" value="Přihlášení" /></div>
+                <div class="verticalLineLeft"><input type="submit" name="registration" value="Registrace" /></div>
+            <?php } else { ?>
+                <div class="verticalLineLeft username"><?php echo $_SESSION['user_name'];?></div>
+                <div class="verticalLineLeft">
+                        <input type="submit" name="logout" value="Odhlásit se">
+                </div>
+            <?php } ?>
+            </form>
         </div>
     </div>
 </div>

@@ -9,16 +9,16 @@
 class User {
 
     public static function registerUser($userName, $passWord) {
-        Db::insert("user", array('nickname'=>$userName, 'password'=>$passWord));
+        Db::insert("user", array('nickname'=>$userName, 'password'=>$passWord, 'position_id'=>2));
     }
 
-    public static function logIn($userName, $passWord) {
-        return Db::getFirstRow("SELECT * FROM user WHERE ", array('nickname'=>$userName, 'password'=>$userName));
+    public static function logIn($userName) {
+        return Db::getFirstRow("SELECT * FROM user WHERE nickname=:nickname", array(':nickname'=>$userName));
     }
 
     public static function getUserPassword($userName) {
-        var_dump(Db::getAll("SELECT * FROM 'user' WHERE ", array('nickname'=>$userName)));
+        return Db::getFirstRow("SELECT password FROM user WHERE nickname=:nickname", array(':nickname'=>$userName));
 
-        return true;
+        //return true;
     }
 }

@@ -13,5 +13,9 @@ class IntroController extends Controller {
         $this->header['title'] = 'Úvod';
         // Nastavení šablony
         $this->view = 'intro';
+
+        if ($_POST) {
+            $this->processMain('vocabulary');
+        }
     }
 }

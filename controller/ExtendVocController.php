@@ -25,6 +25,15 @@ class ExtendVocController extends Controller {
 //        endforeach;
 
         if($_POST) {
+            $this->processMain('extendVoc');
+//            if (isset($_POST['logout'])) {
+//                $this->logout();
+//            }
+//
+//            if (isset($_POST['login'])) {
+//                $this->redirectToLogin('extendVoc');
+//            }
+
             if (isset($_POST['langs1']) && $_POST['langs1'] &&
                 isset($_POST['langs2']) && $_POST['langs2']) {
 
@@ -101,7 +110,7 @@ class ExtendVocController extends Controller {
 
                     //TODO zmenit "1" na prihlaseneho uzivatele
                     if ($id1 != $id2 && ($id1 != -1 || $id2 != -1) && $lang1 != $lang2) {
-                        Dictionary::addTranslation($id1, $lang1, $id2, $lang2, 1);
+                        Dictionary::addTranslation($id1, $lang1, $id2, $lang2, $_SESSION['user_id'], $_SESSION['user_position']);
                         //$this
                     }
                 } else {

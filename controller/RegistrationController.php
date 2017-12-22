@@ -16,7 +16,17 @@ class RegistrationController extends Controller
         // Nastavení šablony
         $this->view = 'registration';
 
+        if (isset($_SESSION['user_id'])) {
+            $this->redirect('intro');
+        }
+
         if ($_POST) {
+            $this->processMain('vocabulary');
+
+//            if (isset($_POST['logout'])) {
+//                $this->logout();
+//            }
+
             if (!$this->testPost()) {
                 return;
             }
@@ -25,7 +35,9 @@ class RegistrationController extends Controller
             $options = ['cost' => 12,];
             $passW = password_hash($passW, PASSWORD_BCRYPT, $options);
 
-            if (User::getUserPassword($userName)) {
+            $passWord = User::getUserPassword($userName);
+
+            if (strlen($passWord["password"]) > 0) {
                 $this->addMessage("Toto uživatelské jméno je bohužel obsazené.");
                 return;
             }
@@ -33,7 +45,12 @@ class RegistrationController extends Controller
             User::registerUser($userName, $passW);
 
             $_SESSION['user_id'] = Db::getLastId();
+            $_SESSION['user_position'] = 2;
             $_SESSION['user_name'] = $userName;
+
+            $this->addMessage("Uživatel $userName úspěšně zaregistrován!");
+
+            $this->redirectBack();
         }
     }
 

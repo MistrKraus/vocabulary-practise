@@ -16,28 +16,50 @@ class LoginController extends Controller
         // Nastavení šablony
         $this->view = 'login';
 
+        if (isset($_SESSION['user_id'])) {
+            $this->redirect('intro');
+        }
+
         if ($_POST) {
+            $this->processMain('vocabulary');
+//            if (isset($_POST['logout'])) {
+//                $this->logout();
+//            }
+
             if (!$this->testPost()) {
                 return;
             }
 
             $userName = $_POST['userName'];
             $passW = $_POST['passW'];
-            $options = ['cost' => 12,];
-            $passW = password_hash($passW, PASSWORD_BCRYPT, $options);
 
-            $user = User::logIn($userName, $passW);
-            if ($user) {
+            $password = User::getUserPassword($userName)['password'];
+
+            if (strlen($password) == 0) {
+                $this->addMessage("Chybné uživatelské jméno!");
+                return;
+            }
+
+            if (password_verify($passW, $password)) {
+                $user = User::logIn($userName);
+
                 $_SESSION['user_id'] = $user['id_user'];
+                $_SESSION['user_position'] = $user['position_id'];
                 $_SESSION['user_name'] = $user['nickname'];
+
+                $this->redirectBack();
             } else {
-                $_SESSION['user_id'] = 0;
-                $this->addMessage("Chybné jméno nebo heslo.");
+                //$_SESSION['user_id'] = 0;
+                $this->addMessage("Chybné heslo");
             }
         }
     }
 
     function testPost() {
+        if (isset($_SESSION['user_id'])) {
+            return false;
+        }
+
         $isOk = true;
 
         if (!(isset($_POST['userName']) && !empty($_POST['userName']))) {

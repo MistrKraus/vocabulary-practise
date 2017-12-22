@@ -1,20 +1,37 @@
-<table>
-    <thead>
-        <tr>
-            <?php foreach ($langs as $lang) :
-                if ($lang != null)?>
-                <th><?= $lang['lang']?></th>
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <?php foreach ($langs as $lang) :
+                    if ($lang != null)?>
+                    <th><?= $lang['lang']?></th>
+                <?php endforeach;
+                if (isset($_SESSION['user_id'])) {?>
+                <th>Můj Slovník</th>
+                <?php if ($_SESSION['user_position']==1) { ?>
+                <th>Slovník</th>
+                <?php } }?>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($trans as $tran) : {
+                if ($tran != null) {?>
+            <tr>
+                <?php foreach ($langs as $lang) : ?>
+                    <td><?= $tran[$lang['id_lang']] ?></td>
+                <?php endforeach;
+                if (isset($_SESSION['user_id'])) {
+                    $tranId = array_search($tran, $trans);
+                    $translation = MyVoc::getTransFromMyVoc($tranId);
+                    if ($translation==null || $translation['user_id']!=$_SESSION['user_id']) {?>
+                        <td><button type="submit" class="btn btn-success" name="add" value="<?=$tranId;?>">Přidat</button></td>
+                    <?php } else {?>
+                        <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tranId?>">Odebrat</button></td>
+                <?php } if ($_SESSION['user_position'] == 1) { ?>
+                        <td><button type="submit" class="btn btn-danger" name="removeTrans" value="<?=$tranId?>">Odstranit</button></td>
+            <?php } } } }?>
+            </tr>
             <?php endforeach; ?>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($trans as $tran) : {
-            if ($tran != null) {?>
-        <tr>
-            <?php foreach ($langs as $lang) : ?>
-            <td><?= $tran[$lang['id_lang']] ?></td>
-            <?php endforeach;} }?>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</form>

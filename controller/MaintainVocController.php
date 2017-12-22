@@ -2,18 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: kraus
- * Date: 07.11.2017
- * Time: 12:01
+ * Date: 14.12.2017
+ * Time: 15:44
  */
 
-class MyVocabularyController extends Controller {
+class maintainVocController extends Controller {
 
     function process($params)
     {
         // Hlavička stránky
-        $this->header['title'] = 'Můj Slovník';
+        $this->header['title'] = 'Sravovat Slovník';
         // Nastavení šablony
-        $this->view = 'myVocabulary';
+        $this->view = 'maintainVoc';
+
+        if ($_SESSION['user_position'] != 1) {
+            $this->addMessage("To se nedělá! Fuj!");
+            $this->redirect('intro');
+        }
 
         if ($_POST) {
             $this->processMain('vocabulary');
@@ -21,6 +26,8 @@ class MyVocabularyController extends Controller {
 //            if (isset($_POST['logout'])) {
 //                $this->logout();
 //            }
+
+
         }
     }
 }

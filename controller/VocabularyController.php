@@ -15,6 +15,8 @@ class VocabularyController extends Controller {
         // Nastavení šablony
         $this->view = 'vocabulary';
 
+        $_SESSION['fromUrl'] = 'vocabulary';
+
         $ws = Vocabulary::getAllWords();
         $langs = Langs::getAllLangs();
         $translations = Dictionary::getAllTraslations();
@@ -22,7 +24,30 @@ class VocabularyController extends Controller {
 
         $this->prepareData($ws, $langs, $translations);
 
-        //var_dump($trans);
+        if ($_POST) {
+            $this->processMain('vocabulary');
+
+//            if (isset($_POST['logout'])) {
+//                $this->logout();
+//            }
+
+            if (isset($_SESSION['user_id'])) {
+                if (isset($_POST['add'])) {
+                    MyVoc::addToMyVoc($_POST['add'], $_SESSION['user_id']);
+                    return;
+                }
+
+                if (isset($_POST['remove'])) {
+                    MyVoc::removeFromMyVoc($_POST['remove'], $_SESSION['user_id']);
+                    return;
+                }
+
+                if (isset($_POST['removeTrans']) && $_SESSION['user_position']) {
+                    Dictionary::removeTranslation($_POST['removeTrans']);
+                    return;
+                }
+            }
+        }
 
 //        $i = 0;
 //        $continue = false;

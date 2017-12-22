@@ -105,11 +105,11 @@ class Db
      */
     public static function insert($tabulka, $parametry = array())
     {
-        $var = "INSERT INTO `$tabulka` (`" .
-            implode('`, `', array_keys($parametry)) .
-            "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)";
-        echo $var;
-        die();
+//        $var = "INSERT INTO `$tabulka` (`" .
+//            implode('`, `', array_keys($parametry)) .
+//            "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)";
+//        echo $var;
+//        die();
 
         return self::query("INSERT INTO `$tabulka` (`" .
             implode('`, `', array_keys($parametry)) .

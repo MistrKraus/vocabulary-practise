@@ -66,6 +66,60 @@ abstract class Controller {
         exit;
     }
 
+    public function redirectBack() {
+        if (isset($_SESSION['fromUrl'])) {
+            $url = $_SESSION['fromUrl'];
+            unset($_SESSION['fromUrl']);
+            $this->redirect($url);
+        } else {
+            $this->redirect('intro');
+        }
+    }
+
+    // Přesměruje na login a zapíše do SESSION původní pozici
+    public function redirectToLogin($fromUrl) {
+        $_SESSION['fromUrl'] = $fromUrl;
+        $this->redirect('login');
+    }
+
+    public function redirectToRegistration($fromUrl) {
+        $_SESSION['fromUrl'] = $fromUrl;
+        $this->redirect('registration');
+    }
+
+    public function logoutAndRedirect() {
+        $this->logout();
+        $this->redirectBack('intro');
+    }
+
+    public function logout() {
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_position']);
+        unset($_SESSION['user_name']);
+    }
+
+    public function processMain($fromUrl) {
+        if (isset($_POST['login'])) {
+            if (isset($_SESSION['user_id'])) {
+                return;
+            }
+
+            $this->redirectToLogin($fromUrl);
+        }
+
+        if (isset($_POST['registration'])) {
+            if (isset($_SESSION['user_id'])) {
+                return;
+            }
+
+            $this->redirectToRegistration($fromUrl);
+        }
+
+        if (isset($_POST['logout'])) {
+            $this->logoutAndRedirect();
+        }
+    }
+
     // Hlavní metoda controlleru
     abstract function process($params);
 

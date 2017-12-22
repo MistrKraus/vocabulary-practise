@@ -17,9 +17,27 @@ input {
     margin-top: 0.2em;
 }
 
+label {
+    font-weight: normal;
+}
+
 .btn {
     margin-top: 0.2em;
     font-size: 0.8em;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.logout input[type="submit"] {
+    background:none!important;
+    color:inherit;
+    border:none;
+    padding:0!important;
+    font: inherit;
+    /*border is optional*/
+    cursor: pointer;
 }
 
 .leftMenuHover a:hover::before {
@@ -27,12 +45,12 @@ input {
     font-weight: bold;
 }
 
-.rightMenuHover a:hover::after {
+.rightMenuHover a:hover::after .logout {
     content:  " |";
     font-weight: bold;
 }
 
-tableMenu {
+.tableMenu {
     float: left;
     width: 150px;
     background-color: lightslategray;

@@ -1,0 +1,60 @@
+<form method="post">
+    <div class="col-md-12">Vyberte jazyky, které si chcete procvičit:</div>
+    <div class="col-md-1"></div>
+    <div class="col-md-2">Překládat</div>
+    <div class="col-md-1">z</div>
+    <div class="col-md-3">
+        <select name="langs1">
+            <?php foreach ($langs as $lang) : ?>
+                <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
+    <div class="col-md-2">do</div>
+    <div class="col-md-3">
+        <select name="langs2">
+            <?php foreach ($langs as $lang) : ?>
+                <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
+    <div class="col-md-12"><br></div>
+    <div class="col-md-12">Kolik slov chcete procvičit:</div>
+    <div class="col-md-1"></div>
+    <div class="col-md-5"><input type="number" name="transCount" min="1"></div>
+    <?php if (isset($_SESSION['user_id'])) { ?>
+        <div class="col-md-6 lbl">
+            <label>
+                <input type="checkbox" name="customVoc">
+                Použít slovní zásobu z "Můj slovník"
+            </label>
+        </div>
+    <?php } else { ?>
+        <div class="col-md-6"></div>
+    <?php } ?>
+    <div class="col-md-10"></div>
+    <div class="col-md-2" align="right">
+        <input class="btn" type="submit" value="Procvičit" name="practise">
+    </div>
+</form>
+<?php if ($testGenerated) { ?>
+<table>
+    <thead>
+    <tr>
+        <?php foreach ($testLangs as $lang) :
+            if ($lang != null)?>
+                <th><?= $lang['lang']?></th>
+        <?php endforeach; ?>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($trans as $tran) : {
+        if ($tran != null) {?>
+            <tr>
+                <td><?= $tran[$langFromId] ?></td>
+                <td><input type="text" name="userTran<?php$tran['id']?>"></td>
+            </tr>
+    <?php } } endforeach; ?>
+    </tbody>
+</table>
+<?php } ?>
