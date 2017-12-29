@@ -30,6 +30,11 @@ class Langs {
         return $fromDb['id_lang'];
     }
 
+    public static function getLang($langId) {
+        return Db::getFirstRow("SELECT lang FROM language WHERE id_lang=:lang",
+            array(':lang'=>$langId));
+    }
+
     public static function addLang($lang) {
         $fromDb = self::getAllLangs();
 
@@ -39,5 +44,9 @@ class Langs {
         }
 
         return Db::insert("language", array('lang'=>$lang));
+    }
+
+    public static function removeLang($langId) {
+        Db::query("DELETE FROM language WHERE id_lang=:id", array(':id'=>$langId));
     }
 }

@@ -6,15 +6,17 @@
  * Time: 19:24
  */
 
-class RegistrationController extends Controller
-{
-
+class RegistrationController extends Controller {
     function process($params)
     {
         // Hlavička stránky
         $this->header['title'] = 'Registrace';
         // Nastavení šablony
         $this->view = 'registration';
+
+        $_SESSION['description'] = "RegistrationController";
+
+        $this->checkLogin();
 
         if (isset($_SESSION['user_id'])) {
             $this->redirect('intro');
@@ -80,5 +82,10 @@ class RegistrationController extends Controller
         }
 
         return $isOk;
+    }
+
+    function clearController()
+    {
+
     }
 }

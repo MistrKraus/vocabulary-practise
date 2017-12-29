@@ -97,11 +97,19 @@ class Db
         return $navrat->rowCount();
     }
 
+    public static function count($tabulka)
+    {
+        $navrat = self::$connection->prepare("SELECT COUNT(*) FROM `$tabulka`");
+        $navrat->execute();
+
+        return $navrat->fetch(PDO::FETCH_ASSOC)['COUNT(*)'];
+    }
+
     /**
      * Vloží do tabulky nový řádek jako data z asociativního pole
      * @param $tabulka
      * @param array $parametry
-     * @return mixed
+     * @return mixed: -1 neuspech
      */
     public static function insert($tabulka, $parametry = array())
     {
@@ -110,11 +118,15 @@ class Db
 //            "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)";
 //        echo $var;
 //        die();
-
-        return self::query("INSERT INTO `$tabulka` (`" .
-            implode('`, `', array_keys($parametry)) .
-            "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)",
-            array_values($parametry));
+        try {
+            return self::query("INSERT INTO `$tabulka` (`" .
+                implode('`, `', array_keys($parametry)) .
+                "`) VALUES (" . str_repeat('?,', sizeOf($parametry) - 1) . "?)",
+                array_values($parametry));
+        } catch (Exception $e) {
+            //echo $e . "<br>----<br>";
+            return -1;
+        }
     }
 
     public static function insertGetId($tabulka, $id, $parametry = array()) {
@@ -134,6 +146,13 @@ class Db
      */
     public static function update($tabulka, $hodnoty = array(), $podminka, $parametry = array())
     {
+//        echo var_dump($parametry). " --- ";
+//        echo "UPDATE `$tabulka` SET `" .
+//            implode('` = ?, `', array_keys($hodnoty)) .
+//            "` = ? " . $podminka,
+//        array_values(array_merge(array_values($hodnoty), $parametry));
+//        //die();
+
         return self::query("UPDATE `$tabulka` SET `" .
             implode('` = ?, `', array_keys($hodnoty)) .
             "` = ? " . $podminka,

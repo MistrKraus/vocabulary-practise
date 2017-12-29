@@ -1,37 +1,51 @@
-<form method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <?php foreach ($langs as $lang) :
-                    if ($lang != null)?>
-                    <th><?= $lang['lang']?></th>
-                <?php endforeach;
-                if (isset($_SESSION['user_id'])) {?>
-                <th>Můj Slovník</th>
-                <?php if ($_SESSION['user_position']==1) { ?>
-                <th>Slovník</th>
-                <?php } }?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($trans as $tran) : {
-                if ($tran != null) {?>
-            <tr>
-                <?php foreach ($langs as $lang) : ?>
-                    <td><?= $tran[$lang['id_lang']] ?></td>
-                <?php endforeach;
-                if (isset($_SESSION['user_id'])) {
-                    $tranId = array_search($tran, $trans);
-                    $translation = MyVoc::getTransFromMyVoc($tranId);
-                    if ($translation==null || $translation['user_id']!=$_SESSION['user_id']) {?>
-                        <td><button type="submit" class="btn btn-success" name="add" value="<?=$tranId;?>">Přidat</button></td>
-                    <?php } else {?>
-                        <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tranId?>">Odebrat</button></td>
-                <?php } if ($_SESSION['user_position'] == 1) { ?>
-                        <td><button type="submit" class="btn btn-danger" name="removeTrans" value="<?=$tranId?>">Odstranit</button></td>
-            <?php } } } }?>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</form>
+<?php if (sizeof($_SESSION['trans']) > 1 || (sizeof($_SESSION['trans']) == 1 && $_SESSION['trans'][0])) { ?>
+    <form method="post">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php foreach ($langs as $lang) :
+                        if ($lang != null)?>
+                        <th><?= $lang['lang']?></th>
+                    <?php endforeach; ?>
+                    <th>Kategorie</th>
+                    <?php if (isset($_SESSION['user_id'])) {?>
+                        <th>Můj Slovník</th>
+                    <?php if ($_SESSION['user_position']==1) { ?>
+                        <th>Slovník</th>
+                    <?php } }?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($_SESSION['trans'] as $tran) : {
+                    if ($tran != null) {?>
+                <tr>
+                    <?php foreach ($langs as $lang) : {
+                        if ($tran['L1'] == $lang['id_lang']) {?>
+                            <td><?= $tran['w1'] ?></td>
+                        <?php } else { if ($tran['L2'] == $lang['id_lang']) {?>
+                            <td><?= $tran['w2'] ?></td>
+                        <?php } else {?>
+                            <td> - </td>
+                    <?php } } } endforeach; ?>
+                    <td><?= $tran['category']?></td>
+                    <?php if (isset($_SESSION['user_id'])) {
+                        $tranId = $tran['id'];//array_search($tran, $_SESSION['trans']);
+                        $translation = MyVoc::getTransFromMyVoc($tranId);
+                        if (sizeof($translation) == 0 || isset($translation[0][$tranId]) && $tran['user_id'] != $_SESSION['user_id']) {?>
+                            <td><button type="submit" class="btn btn-success" name="add" value="<?=$tranId;?>">Přidat</button></td>
+                        <?php } else {?>
+                            <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tranId?>">Odebrat</button></td>
+                    <?php } if ($_SESSION['user_position'] == 1) { ?>
+                            <td><button type="submit" class="btn btn-danger" name="removeTrans" value="<?=$tranId?>">Odstranit</button></td>
+                <?php } } } }?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </form>
+<?php } else { ?>
+    <div class="lista">
+        Slovník je prázdný -<a href="extendVoc">Rozšířit Slovník</a>
+    </div>
+<?php } ?>

@@ -14,25 +14,15 @@ class ExtendVocController extends Controller {
         // Nastavení šablony
         $this->view = 'extendVoc';
 
+        $_SESSION['description'] = "ExtendVocController";
+
+        $this->checkLogin();
+
         $this->data['langs'] = Langs::getAllLangs();
+        $this->data['categories'] = Categories::getAllCategories();
 
-        //$this->addMessage(Vocabulary::getWordID("Ahoj", 2));
-        //$this->addMessage(Langs::getLangID("Čeština));
-
-        // works
-//        foreach ($this->data['langs'] as $item) :
-//            echo $item['id_lang'] . " - " . $item['lang'];
-//        endforeach;
-
-        if($_POST) {
+        if ($_POST) {
             $this->processMain('extendVoc');
-//            if (isset($_POST['logout'])) {
-//                $this->logout();
-//            }
-//
-//            if (isset($_POST['login'])) {
-//                $this->redirectToLogin('extendVoc');
-//            }
 
             if (isset($_POST['langs1']) && $_POST['langs1'] &&
                 isset($_POST['langs2']) && $_POST['langs2']) {
@@ -43,57 +33,65 @@ class ExtendVocController extends Controller {
                 $succes1 = $lang1;
                 $succes2 = $lang2;
 
-                //$this->addMessage("is it workin' and shit?");
-
+                // prida jazyk, ktery jeste neni v databazi
                 if ($lang1 == -1) {
                     if (isset($_POST['newLang1']) && $_POST['newLang1'] && strlen($_POST['newLang1']) > 1) {
-                        $lang1 = $_POST['newLang1'];
+                        $lang1 = ucfirst($_POST['newLang1']);
                         $succes1 = Langs::addLang($lang1);
 
-                        $this->addMessage('S1='.$succes2);
+                        if ($succes1 == -1)
+                            Langs::addLang($lang1);
+
+                        //$this->addMessage('S1='.$succes2);
                         //$this->addMessage(strlen($lang1));
                     }
                     else {
-                        $succes1 = 0;
+                        $succes1 = -1;
                         $this->addMessage('Pokud volíte "Jiný" jazyk, musíte napsat který!');
                         $this->addMessage('(Pokud se vám pole pro vyplnění nezobrazuje, povolte JavaScript)');
                     }
 
-                    $lang1 = $succes1 == 0 ? 0 : Langs::getLangID($lang1);
+                    //echo $lang1 . " přidan<br>";
+                    $lang1 = $succes1 == -1 ? -1 : Langs::getLangID($lang1);
                 }
 
+                // prida jazyk, ktery neni v databazi
                 if ($lang2 == -1) {
                     if (isset($_POST['newLang2']) && $_POST['newLang2'] && strlen($_POST['newLang2']) > 1) {
-                        $lang2 = $_POST['newLang2'];
+                        $lang2 = ucfirst($_POST['newLang2']);
                         $succes2 = Langs::addLang($lang2);
 
-                        $this->addMessage('S2='.$succes2);
+                        //$this->addMessage('S2='.$succes2);
                     }
                     else {
-                        $succes2 = 0;
+                        $succes2 = -1;
                         $this->addMessage('Pokud volíte "Jiný" jazyk, musíte napsat který!');
                         $this->addMessage('Pokud se vám pole pro vyplnění nezobrazuje, povolte JavaScript)');
                     }
 
-                    $lang2 = $succes2 == 0 ? 0 : Langs::getLangID($lang2);
+                    //echo $lang2 . " přidan<br>";
+                    $lang2 = $succes2 == -1 ? -1 : Langs::getLangID($lang2);
                 }
 
-                if ($succes1 == $succes2) {
+                // kontrola jazyku
+                if ($lang1 == $lang2) {
                     $this->addMessage('Vkládáte nový překlad - jazyky NESMÍ být SHODNÉ!');
 
                     return;
                 }
 
-                if ($succes1 == 0 || $succes2 == 0) {
+                // kontrola
+                if ($succes1 == -1 || $succes2 == -1) {
                     $this->addMessage('Chyba při práci s databází');
 
                     return;
                 }
 
+                // pridani slov a prekladu
                 if (isset($_POST['word1']) && $_POST['word1'] &&
                     isset($_POST['word2']) && $_POST['word2']) {
-                    $word1 = $_POST['word1'];
-                    $word2 = $_POST['word2'];
+                    $word1 = ucfirst($_POST['word1']);
+                    $word2 = ucfirst($_POST['word2']);
 
                     if (strlen($word1) < 1 || strlen($word2) < 1) {
                         $this->addMessage('Pole "Slovo" musí být vyplněné');
@@ -101,22 +99,52 @@ class ExtendVocController extends Controller {
                         return;
                     }
 
+                    $category = ucfirst($_POST['category']);
+
+                    $data = array();
+                    $data['lang1'] = $lang1;
+                    $data['word1'] = $word1;
+                    $data['lang1'] = $lang1;
+                    $data['word2'] = $word2;
+                    $data['category'] = $category;
+
+                    if (isset($_SESSION['addedTrans']) && ($_SESSION['addedTrans'] == $data)) {
+                        unset($_SESSION['addedTrans']);
+                        return;
+                    }
+                    $_SESSION['addedTrans'] = $data;
+
+                    //echo $_POST['category'] . " - ";
+                    if ($_POST['category'] == 1 && isset($_POST['newCat']) && $_POST['newCat']) {
+                        $category = $_POST['newCat'];
+
+                        $category = Categories::addCategory($category);
+                        //echo $category . "<br>";
+                    }
+
                     $id1 = Vocabulary::addWord($word1, $lang1); //Vocabulary::getWordID($word1, $lang1);
                     if ($id1 == 0) Vocabulary::getWordID($word1, $lang1);
+                    //echo $word1 . " přidan<br>";
 
                     $id2 = Vocabulary::addWord($word2, $lang2); //Vocabulary::getWordID($word2, $lang2);
                     if ($id2 == 0) Vocabulary::getWordID($word2, $lang2);
+                    //echo $word2 . " přidan<br>";
 
-
-                    //TODO zmenit "1" na prihlaseneho uzivatele
                     if ($id1 != $id2 && ($id1 != -1 || $id2 != -1) && $lang1 != $lang2) {
-                        Dictionary::addTranslation($id1, $lang1, $id2, $lang2, $_SESSION['user_id'], $_SESSION['user_position']);
-                        //$this
+                        Dictionary::addTranslation($id1,$id2, $_SESSION['user_id'], $category, $_SESSION['user_position']);
+                        //echo "preklad přidan<br>";
                     }
                 } else {
                     $this->addMessage('Pole "Slovo" musí být vyplněné!');
                 }
             }
+
+            $this->data['langs'] = Langs::getAllLangs();
+            $this->data['categories'] = Categories::getAllCategories();
         }
+    }
+
+    function clearController() {
+        //echo "cistim muhaha";
     }
 }

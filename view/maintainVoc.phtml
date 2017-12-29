@@ -1,0 +1,97 @@
+<form method="post">
+    <div class="col-md-12">
+        <div>Překlady ke schválení:</div>
+        <?php if (!isset($_SESSION['trans'])) { ?>
+            <div class="col-md-1"></div>
+            <div class="col-md-11" style="font-style: italic">
+                - Žádné překlady ke schválení
+                <span class="glyphicon glyphicon-ok" style="color: #00ff00;"></span>
+            </div>
+        <?php } else { ?>
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php foreach ($langs as $lang) : { ?>
+                        <th><?=$lang['lang']?></th>
+                    <?php } endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($_SESSION['trans'] as $tran) : {
+                if ($tran != null) { ?>
+                    <tr>
+                        <?php foreach ($langs as $lang) : ?>
+                            <td><?= $tran[$lang['id_lang']] ?></td>
+                        <?php endforeach; ?>
+                        <td><button type="submit" class="btn btn-success" name="addT" value="<?=$tran['id']?>">Schválit</button></td>
+                        <td><button type="submit" class="btn btn-danger" name="removeT" value="<?=$tran['id']?>">Odstranit</button></td>
+                    </tr>
+                <?php } } endforeach; ?>
+            </tbody>
+        </table>
+        <?php } ?>
+    </div>
+    <div class="col-md-12" style="margin-top: 30px">
+        <div>Slova bez překladu:</div>
+        <?php if (sizeof($_SESSION['words']) == 1 && isset($_SESSION['words'][0])) { ?>
+            <div class="col-md-1"></div>
+            <div class="col-md-10" style="font-style: italic">
+                - Žádná slova bez překladu
+                <span class="glyphicon glyphicon-ok" style="color: #00ff00;"></span>
+            </div>
+        <?php } else { ?>
+            <div class="col-md-9">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Jazyk</th>
+                        <th>Slovo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($_SESSION['words'] as $word) : {
+                        if ($word != null) {?>
+                            <tr>
+                                <td><?=$word['lang']?></td>
+                                <td><?=$word['word']?></td>
+                                <td align="center"><button type="submit" class="btn btn-danger" name="removeW" value="<?=$word['id_word'];?>">Odstranit</button></td>
+                            </tr>
+                        <?php } } endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php } ?>
+    </div>
+    <div class="col-md-12" style="margin-top: 30px">
+        <div>Jazyky bez slov:</div>
+        <?php if (sizeof($_SESSION['noLangs']) == 1 && isset($_SESSION['noLangs'][0])) { ?>
+            <div class="col-md-1"></div>
+            <div class="col-md-10" style="font-style: italic">
+                - Žádné jazyky beze slov
+                <span class="glyphicon glyphicon-ok" style="color: #00ff00;"></span>
+            </div>
+        <?php } else { ?>
+            <div class="col-md-9">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Jazyk</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($_SESSION['noLangs'] as $lang) : {
+                        if ($lang != null) {?>
+                            <tr>
+                                <td><?=$lang['lang']?></td>
+                                <td align="center"><button type="submit" class="btn btn-danger" name="removeL" value="<?=$lang['id_lang'];?>">Odstranit</button></td>
+                            </tr>
+                        <?php } } endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php } ?>
+    </div>
+</form>

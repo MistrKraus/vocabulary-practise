@@ -1,0 +1,48 @@
+<?php if (isset($_SESSION['user_id'])) {
+//    var_dump($_SESSION['trans']);
+//    echo sizeof($_SESSION['trans']);
+    if (!(sizeof($_SESSION['trans']) == 0)) { ?>
+    <form method="post">
+        <table class="table">
+            <thead>
+            <tr>
+                <?php foreach ($langs as $lang) : {
+                    if ($lang != null) { ?>
+                        <th><?= $lang['lang']?></th>
+                <?php } } endforeach; ?>
+                <th>Kategorie</th>
+                <th>Strike</th>
+                <th>Můj Slovník</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($_SESSION['trans'] as $tran) : {
+                if ($tran != null) { ?>
+                    <tr>
+                        <?php foreach ($langs as $lang) : {
+                            if ($lang['id_lang'] == $tran['L1']) {
+                                echo "<td>" . $tran['w1'] . "</td>";
+                            } else { if ($lang['id_lang'] == $tran['L2']) {
+                                echo "<td>" . $tran['w2'] . "</td>";
+                            } else {?>
+                            <td> - </td>
+                        <?php } } } endforeach; ?>
+                        <td><?= $tran['category']?></td>
+                        <td>
+                            <input type="number" name="<?=$tran['id']?>" min="0" max="<?=$tran['strike']?>" value="<?=$tran['strike']?>">
+                            <button type="submit" class="btn" name="strike" value="<?=$tran['id']?>">Uložit</button>
+                        </td>
+                        <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tran['tran_id']?>">Odebrat</button></td>
+                    </tr>
+            <?php } } endforeach; ?>
+            </tbody>
+        </table>
+    </form>
+<?php } else { ?>
+    <div class="lista">
+    Váš slovník je prázdný -<a href="vocabulary">Rozšířit "Můj Slovník"</a>
+    </div>
+<?php } } else {
+    require("view/loggedOnly.phtml");
+}?>

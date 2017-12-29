@@ -15,12 +15,69 @@ class MyVocabularyController extends Controller {
         // Nastavení šablony
         $this->view = 'myVocabulary';
 
+        $_SESSION['description'] = 'MyVocabularyController';
+
+        $this->checkLogin();
+
+        if (!isset($_SESSION['user_id'])) {
+            return;
+        }
+        $userId = $_SESSION['user_id'];
+
+        $_SESSION['fromUrl'] = 'myVocabulary';
+        $_SESSION['trans'] = MyVoc::getMyVoc($userId);
+        $this->data['langs'] = Langs::getAllLangs();//$this->getLangs();
+
         if ($_POST) {
             $this->processMain('vocabulary');
 
-//            if (isset($_POST['logout'])) {
-//                $this->logout();
-//            }
+            if (isset($_POST['strike'])) {
+                $tranId = $_POST['strike'];
+                MyVoc::updateStrike($tranId, $_POST[$tranId]);
+                //var_dump($_SESSION['trans']);
+                $_SESSION['trans'] = MyVoc::getMyVoc($_SESSION['user_id']);
+            }
+
+            if (isset($_POST['remove'])) {
+                MyVoc::removeFromMyVoc($_POST['remove'], $_SESSION['user_id']);
+                unset($_POST['remove'], $_SESSION['trans']['id']);
+            }
         }
+    }
+
+    function getLangs() {
+        $langs = Langs::getAllLangs();
+        $trans = $_SESSION['trans'];
+        $noLangs = array(array());
+
+        foreach ($langs as $lang) : {
+            $id = $lang['id_lang'];
+            $noWord = true;
+
+            foreach ($trans as $tran) : {
+                if ($tran['L1'] == $id || $tran['L2'] == $id) {
+                    $noWord = false;
+                    break;
+                }
+            } endforeach;
+
+            if ($noWord) {
+                $noLangs[$id] = $lang;
+            }
+        } endforeach;
+
+        foreach ($noLangs as $noLang) : {
+            unset($noLang, $langs);
+        } endforeach;
+
+        if (!isset($langs)) {
+            $langs = array(array());
+        }
+
+        return $langs;
+    }
+
+    function clearController() {
+
     }
 }

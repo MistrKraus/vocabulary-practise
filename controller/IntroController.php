@@ -14,8 +14,18 @@ class IntroController extends Controller {
         // Nastavení šablony
         $this->view = 'intro';
 
+        $_SESSION['description'] = "IntroController";
+
+        $this->checkLogin();
+
         if ($_POST) {
             $this->processMain('vocabulary');
         }
+    }
+
+    function clearController()
+    {
+        //echo "cistim intro";
+        // TODO: Implement clearController() method.
     }
 }

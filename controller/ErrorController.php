@@ -14,5 +14,14 @@ class ErrorController extends Controller {
         $this->header['title'] = 'Chyba 404';
         // Nastavení šablony
         $this->view = 'error';
+
+        $this->checkLogin();
+
+        $_SESSION['description'] = "ErrorController";
+    }
+
+    function clearController()
+    {
+        // TODO: Implement clearController() method.
     }
 }

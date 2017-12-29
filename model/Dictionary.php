@@ -8,13 +8,73 @@
 
 class Dictionary {
 
+    // Vrati vsechny schvalene preklady
     public static function getAllTraslations() {
-        return Db::getAll("SELECT * FROM `translation`
-            INNER JOIN (word INNER JOIN language ON language.id_lang=word.lang_id)
-             ON translation.word_id1=word.id_word AND approved>0", null);
-            //INNER JOIN language ON word.lang_id = language.id_lang", null);
+//        return Db::getAll("SELECT * FROM `translation`
+//            INNER JOIN (word INNER JOIN language ON language.id_lang=word.lang_id)
+//             ON translation.word_id1=word.id_word AND approved>0", null);
+//            //INNER JOIN language ON word.lang_id = language.id_lang", null);
+
+        return Db::getAll("SELECT t.id_trans AS id, w1.word AS w1, l1.id_lang AS L1,
+                w2.word AS w2, l2.id_lang AS L2, cat.name AS category, t.user_id FROM translation AS t 
+            JOIN category AS cat on cat.id_category=t.category_id
+            JOIN word AS w1 on w1.id_word=t.word_id1 
+            JOIN word AS w2 on w2.id_word=t.word_id2
+            JOIN language AS L1 on w1.lang_id=L1.id_lang
+            JOIN language AS L2 on w2.lang_id=L2.id_lang
+        AND approved=1",null);
     }
 
+    // Vrati vsechny neschvalene preklady
+    public static function getUnappTranslations() {
+        return Db::getAll("SELECT t.id_trans AS id, w1.word AS w1, l1.id_lang AS L1,w2.word AS w2, l2.id_lang AS L2 FROM translation AS t 
+            JOIN word AS w1 on w1.id_word=t.word_id1 
+            JOIN word AS w2 on w2.id_word=t.word_id2
+            JOIN language AS L1 on w1.lang_id=L1.id_lang
+            JOIN language AS L2 on w2.lang_id=L2.id_lang
+            AND approved=0",null);
+    }
+
+    // Vratio vsechna slova bez prekladu
+    public static function getUntransWords() {
+        $words = Vocabulary::getWordsWithLangs();
+//        $trans = Db::getAll("SELECT w1.id_word AS w1_id, w1.word AS w1_word, L1.id_lang AS L1_id, L1.lang AS L1_lang,
+//                                  w2.id_word AS w2_id, w2.word AS w2_word, L2.id_lang AS L2_id, L2.lang AS L2_lang FROM translation AS t
+//            JOIN word AS w1 on w1.id_word=t.word_id1
+//            JOIN word AS w2 on w2.id_word=t.word_id2
+//            JOIN language AS L1 on w1.lang_id=L1.id_lang
+//            JOIN language AS L2 on w2.lang_id=L2.id_lang", null);
+
+        $untransW = array(array());
+
+        foreach ($words as $word) : {
+            $id = $word['id_word'];
+            $translation = Db::getAll("SELECT * FROM translation WHERE 
+              word_id1=:id1 OR word_id2=:id2", array(':id1'=>$id, ':id2'=>$id));
+            if (sizeof($translation) == 0) {
+                $untransW[$id] = $word;
+            }
+        } endforeach;
+
+        return $untransW;
+
+//        foreach ($words as $word) : {
+//            $wordId = $word['id_word'];
+//            $add = true;
+//            foreach ($trans as $tran) : {
+//                if ($wordId == $tran['word_id1'] || $wordId == $tran['word_id2']) {
+//                    $add = false;
+//                    break;
+//                }
+//            } endforeach;
+//
+//            if ($add) {
+//
+//            }
+//        }
+    }
+
+    // vrati vsechna preklady mezi dvema jazyky
     public static function getDictionary($lang1Id, $lang2Id) {
         if ($lang1Id == $lang2Id)
             return -1;
@@ -24,12 +84,32 @@ class Dictionary {
             JOIN word AS w2 on w2.id_word=t.word_id2
             JOIN language AS L1 on w1.lang_id=L1.id_lang
             JOIN language AS L2 on w2.lang_id=L2.id_lang
-            WHERE (l2.id_lang=:lang2 OR l2.id_lang=:lang1) 
-            AND (l1.id_lang=:lang2 OR l1.id_lang=:lang1)
+            WHERE (l2.id_lang=:lang1 OR l2.id_lang=:lang2) 
+            AND (l1.id_lang=:lang3 OR l1.id_lang=:lang4)
             AND approved>0",
-            array('lang1'=>$lang1Id, 'lang2'=>$lang2Id));
+            array('lang1'=>$lang1Id, 'lang2'=>$lang2Id, 'lang3'=>$lang1Id, 'lang4'=>$lang2Id));
     }
 
+    // vrati nahodny pocet prekladu mezi dvema jazyky
+    public static function getRandomTrans($transCount, $lang1Id, $lang2Id) {
+        if ($lang1Id == $lang2Id) {
+            return -1;
+        }
+
+        return Db::getAll("SELECT t.id_trans AS id, w1.word AS w1, l1.id_lang AS L1,w2.word AS w2, l2.id_lang AS L2
+            FROM translation AS t 
+            JOIN word AS w1 on w1.id_word=t.word_id1 
+            JOIN word AS w2 on w2.id_word=t.word_id2
+            JOIN language AS L1 on w1.lang_id=L1.id_lang
+            JOIN language AS L2 on w2.lang_id=L2.id_lang
+            WHERE (w1.lang_id=:lang1 OR w1.lang_id=:lang2) 
+            AND (w2.lang_id=:lang3 OR w2.lang_id=:lang4)
+            AND approved>0
+            ORDER BY RAND() LIMIT $transCount",
+            array('lang2'=>$lang1Id, 'lang1'=>$lang2Id, 'lang3'=>$lang1Id, 'lang4'=>$lang2Id));
+    }
+
+    // vrati vsechny neschvalene preklady
     public static function getNotapproved() {
         return Db::getAll("SELECT w1.word AS w1, l1.lang AS L1,w2.word AS w2, l2.lang AS L2 FROM translation AS t 
             JOIN word AS w1 on w1.id_word=t.word_id1 
@@ -39,16 +119,26 @@ class Dictionary {
             WHERE approved=0");
     }
 
-    public static function addTranslation($word1Id, $word2Id, $user, $userPos) {
+    // prida preklad - pokud jej pridava administrator, je pridan automaticky
+    public static function addTranslation($word1Id, $word2Id, $user, $catId, $userPos) {
         if ($userPos == 1) {
             return $word1Id == $word2Id ? -1 : Db::insert("translation",
-                array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user, 'approved'=>1));
+                array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user, 'category_id'=>$catId, 'approved'=>1));
         }
         return $word1Id == $word2Id ? -1 : Db::insert("translation",
-            array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user));
+            array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user, 'category_id'=>$catId));
+    }
+
+    public static function approveTranslation($transId) {
+//        Db::update("translation", array('approved'=>1), "WHERE `id_trans`= ?", array('id_trans'=>$transId));
+        Db::query("UPDATE translation SET approved=:app WHERE id_trans=:id", array(':app'=>1, ':id'=>$transId));
     }
 
     public static function removeTranslation($transId) {
-        return Db::query("DELETE * FROM translation WHERE id_trans=:id_trans", array('id_trans'=>$transId));
+        return Db::query("DELETE FROM translation WHERE id_trans=:id_trans", array(':id_trans'=>$transId));
+    }
+
+    public static function getTranslationsCount() {
+        return Db::count("translation");
     }
 }

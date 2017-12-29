@@ -116,11 +116,25 @@ abstract class Controller {
         }
 
         if (isset($_POST['logout'])) {
+            $_SESSION['fromUrl'] = $fromUrl;
             $this->logoutAndRedirect();
+        }
+    }
+
+    public function checkLogin() {
+        if (isset($_SESSION['user_id'])) {
+            $user = User::getUser($_SESSION['user_id']);
+
+            if (empty($user)) {
+                $this->logout();
+            }
         }
     }
 
     // Hlavní metoda controlleru
     abstract function process($params);
+
+    // Vycisti session controlleru
+    abstract function clearController();
 
 }

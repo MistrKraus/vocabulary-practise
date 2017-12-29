@@ -8,13 +8,16 @@
 
 class LoginController extends Controller
 {
-
     function process($params)
     {
         // Hlavička stránky
         $this->header['title'] = 'Přihlášení';
         // Nastavení šablony
         $this->view = 'login';
+
+        $_SESSION['description'] = "LoginController";
+
+        $this->checkLogin();
 
         if (isset($_SESSION['user_id'])) {
             $this->redirect('intro');
@@ -73,5 +76,10 @@ class LoginController extends Controller
         }
 
         return $isOk;
+    }
+
+    function clearController()
+    {
+        // TODO: Implement clearController() method.
     }
 }

@@ -38,10 +38,21 @@ class RedirectController extends Controller {
     function process($params) {
         $parsedURL = $this->parseURL($params[0]);
 
-        if(empty($parsedURL[0]))
+        if(empty($parsedURL[0])) {
             $this->redirect("intro");
+        }
 
         $ControllerClass = $this->dashToCamelNotation(array_shift($parsedURL)) . 'Controller';
+
+        if (isset($_SESSION['description'])) {
+            $fromClass = $_SESSION['description'];
+            //echo $fromClass . " " . $ControllerClass . " -> ";
+            if (file_exists('controller/' . $fromClass . '.php') && $fromClass != $ControllerClass) {
+                $fromController = new $fromClass;
+                $fromController->clearController();
+                //echo "SESSION vycistena";
+            }
+        }
 
         if (file_exists('controller/' . $ControllerClass . '.php')) {
             $this->controller = new $ControllerClass;
@@ -56,5 +67,9 @@ class RedirectController extends Controller {
         $this->data['messages'] = $this->getMessages();
         // Nastavení hlavní šablony
         $this->view = 'main';
+    }
+
+    function clearController() {
+
     }
 }

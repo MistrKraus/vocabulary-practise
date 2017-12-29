@@ -1,3 +1,4 @@
+<?php if (sizeof($langs) >= 2) { ?>
 <form method="post">
     <div class="col-md-12">Vyberte jazyky, které si chcete procvičit:</div>
     <div class="col-md-1"></div>
@@ -5,27 +6,43 @@
     <div class="col-md-1">z</div>
     <div class="col-md-3">
         <select name="langs1">
-            <?php foreach ($langs as $lang) : ?>
-                <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+            <?php foreach ($langs as $lang) :
+                $lang1 = $lang['id_lang']; ?>
+                <option name="lang1" value="<?= $lang1 ?>"
+                    <?php if (isset($_SESSION['langFromId']) && $_SESSION['langFromId'] == $lang1) {
+                        echo 'selected="selected"';
+                    }?>><?=$lang['lang']?></option>
             <?php endforeach ?>
         </select>
     </div>
     <div class="col-md-2">do</div>
     <div class="col-md-3">
         <select name="langs2">
-            <?php foreach ($langs as $lang) : ?>
-                <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+            <?php foreach ($langs as $lang) :
+                $lang2 = $lang['id_lang']; ?>
+                <option name="lang2" value="<?=$lang['id_lang']?>"
+                    <?php if (isset($_SESSION['langToId']) && $_SESSION['langToId'] == $lang2) {
+                        echo 'selected="selected"';
+                    }?>><?=$lang['lang']?></option>
             <?php endforeach ?>
         </select>
     </div>
     <div class="col-md-12"><br></div>
     <div class="col-md-12">Kolik slov chcete procvičit:</div>
     <div class="col-md-1"></div>
-    <div class="col-md-5"><input type="number" name="transCount" min="1"></div>
+    <div class="col-md-5"><input type="number" style="width: 80%" name="transCount" min="1"
+                                 max="<?php echo Dictionary::getTranslationsCount(). '" value="';
+                                 if (isset($_SESSION['trans']) && sizeof($_SESSION['trans'] > 0)) {
+                                     echo sizeof($_SESSION['trans']);
+                                 } else {
+                                     echo "1";
+                                 } ?>"></div>
     <?php if (isset($_SESSION['user_id'])) { ?>
         <div class="col-md-6 lbl">
             <label>
-                <input type="checkbox" name="customVoc">
+                <input type="checkbox" name="customVoc" <?php if (isset($_SESSION['customVoc'])) {
+                    echo "checked";
+                }?>>
                 Použít slovní zásobu z "Můj slovník"
             </label>
         </div>
@@ -36,25 +53,67 @@
     <div class="col-md-2" align="right">
         <input class="btn" type="submit" value="Procvičit" name="practise">
     </div>
-</form>
-<?php if ($testGenerated) { ?>
-<table>
-    <thead>
-    <tr>
-        <?php foreach ($testLangs as $lang) :
-            if ($lang != null)?>
-                <th><?= $lang['lang']?></th>
-        <?php endforeach; ?>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($trans as $tran) : {
-        if ($tran != null) {?>
+    <?php if (isset($_SESSION['testState'])) {
+            if (sizeof($_SESSION['trans']) == 0) {
+                echo '<div>V "Můj Slovník" nemáte  dostatečný počet překladů.</div>';
+            } else { ?>
+        <table class="table col-md-10">
+            <thead>
             <tr>
-                <td><?= $tran[$langFromId] ?></td>
-                <td><input type="text" name="userTran<?php$tran['id']?>"></td>
+                <th style="width: 30%"><?= $_SESSION['langFrom'] ?></th>
+                <th style="width: 40%"><?= $_SESSION['langTo'] ?></th>
+                <th style="width: 30%">
+                    <?php if ($_SESSION['testState'] == 2) { echo "Překlad"; }?>
+                </th>
             </tr>
-    <?php } } endforeach; ?>
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+            <?php foreach ($_SESSION['trans'] as $tran) : {
+                if ($tran != null) {?>
+                    <tr>
+                        <td><?php
+                        if($tran['L1'] == $_SESSION['langFromId']) {
+                            echo $tran['w1'];
+                        } else {
+                            echo $tran['w2'];
+                        }?></td>
+                        <td>
+                            <input type="text" name="userTran<?=$tran['id']?>"
+                                   value="<?php if(isset($_SESSION['userTrans'])) {
+                                echo $_SESSION['userTrans'][$tran['id']] . '"';
+                            } ?>">
+                            <?php if ($_SESSION['testState'] == 2) {
+                                if ($_SESSION['mistakesId'][$tran['id']] == 0) { ?>
+                                    <span class="glyphicon glyphicon-ok" style="color: #00ff00"></span>
+                                <?php } else { ?>
+                                    <span class="glyphicon glyphicon-remove" style="color: #ff0000"></span>
+                                <?php } ?>
+                        </td>
+                        <td>
+                            <?php if ($_SESSION['testState']) {
+                                if ($tran['L1'] == $_SESSION['langToId']) {
+                                    echo $tran['w1'];
+                                } else {
+                                    echo $tran['w2'];
+                                }
+                            } } ?>
+                        </td>
+                    </tr>
+            <?php } } endforeach; ?>
+            </tbody>
+        </table>
+        <div class="col-md-10"></div>
+        <div class="col-md-2" align="right">
+            <?php if ($_SESSION['testState'] == 1) { ?>
+                <input class="btn" type="submit" value="Zkontrolovat" name="check">
+            <?php } else { ?>
+                <input class="btn" type="submit" value="Vyčistist" name="new">
+            <?php } ?>
+        </div>
+        <?php } } ?>
+</form>
+<?php } else { ?>
+    <div class="lista">
+        Ve slovníku není dostatek překladů -<a href="extendVoc">Rozšířit Slovník</a>
+    </div>
 <?php } ?>

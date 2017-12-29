@@ -21,4 +21,8 @@ class User {
 
         //return true;
     }
+
+    public static function getUser($user_id) {
+        return Db::getAll("SELECT * FROM user WHERE id_user=:id", array(':id'=>$user_id));
+    }
 }
