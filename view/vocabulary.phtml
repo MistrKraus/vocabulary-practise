@@ -31,12 +31,12 @@
                     <td><?= $tran['category']?></td>
                     <?php if (isset($_SESSION['user_id'])) {
                         $tranId = $tran['id'];//array_search($tran, $_SESSION['trans']);
-                        $translation = MyVoc::getTransFromMyVoc($tranId);
-                        if (sizeof($translation) == 0 || isset($translation[0][$tranId]) && $tran['user_id'] != $_SESSION['user_id']) {?>
+                        $translation = MyVoc::getTransFromMyVoc($tranId, $_SESSION['user_id']);
+                        if (sizeof($translation) == 0) { //|| isset($translation[0][$tranId]) && $tran['user_id'] != $_SESSION['user_id']) {?>
                             <td><button type="submit" class="btn btn-success" name="add" value="<?=$tranId;?>">Přidat</button></td>
                         <?php } else {?>
                             <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tranId?>">Odebrat</button></td>
-                    <?php } if ($_SESSION['user_position'] == 1) { ?>
+                    <?php } if ($_SESSION['user_position'] == 1 && empty(MyVoc::getSomebodiesTranIdById($tranId))) { ?>
                             <td><button type="submit" class="btn btn-danger" name="removeTrans" value="<?=$tranId?>">Odstranit</button></td>
                 <?php } } } }?>
                 </tr>

@@ -16,6 +16,7 @@ class PractiseController extends Controller {
         $this->view = 'practise';
 
         $_SESSION['description'] = "PractiseController";
+        $_SESSION['fromUrl'] = 'practise';
 
         $this->checkLogin();
 
@@ -106,17 +107,26 @@ class PractiseController extends Controller {
 //            echo "userTran" . $tran['id'];
             $word = ucfirst($_POST["userTran" . $tran['id']]);
 
+            echo $word;
+
             if ($tran['L1'] != $fromLangId) {
                 $leven = levenshtein(strtolower($tran['w1']), strtolower($word));
                 $_SESSION['userTrans'][$tran['id']] = $word;
-                //echo " $leven";
+
+                if (isset($_SESSION['cutomVoc']) && $_SESSION['cutomVoc']) {
+                    MyVoc::addStrike([$tran['id']], $_SESSION['user_id'], 0);
+                }
             } else {
                 $leven = levenshtein(strtolower($tran['w2']), strtolower($word));
                 $_SESSION['userTrans'][$tran['id']] = $word;
-                //echo " $leven";
+
+                if (isset($_SESSION['cutomVoc']) && $_SESSION['cutomVoc']) {
+                    //echo $tran['id'] . " " . $_SESSION['user_id'];
+                    MyVoc::addStrike($tran['id'], $_SESSION['user_id'], 1);
+                }
             }
 
-            echo $leven;
+            //echo $leven;
 
             $mistakesId[$tran['id']] = $leven;
         }

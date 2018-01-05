@@ -39,14 +39,9 @@ class VocabularyController extends Controller {
                 }
 
                 if (isset($_POST['removeTrans']) && $_SESSION['user_position']) {
-                    //echo "removing<br>";
-                    $removed = Dictionary::removeTranslation($_POST['removeTrans']);
-                    var_dump($removed);
-                    if ($removed > 0) {
-
-                        unset($_SESSION['trans'][$_POST['removeTrans']]);
-                    }
-                    return;
+                    $tranId = $_POST['removeTrans'];
+                    Dictionary::removeTranslation($tranId);
+                    $_SESSION['trans'] = Dictionary::getAllTraslations();
                 }
             }
         }

@@ -99,6 +99,8 @@ abstract class Controller {
     }
 
     public function processMain($fromUrl) {
+        $fromUrl = $_SESSION['fromUrl'];
+
         if (isset($_POST['login'])) {
             if (isset($_SESSION['user_id'])) {
                 return;

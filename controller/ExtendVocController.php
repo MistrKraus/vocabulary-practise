@@ -15,6 +15,7 @@ class ExtendVocController extends Controller {
         $this->view = 'extendVoc';
 
         $_SESSION['description'] = "ExtendVocController";
+        $_SESSION['fromUrl'] = 'extendVoc';
 
         $this->checkLogin();
 

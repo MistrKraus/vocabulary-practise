@@ -16,6 +16,7 @@ class MyVocabularyController extends Controller {
         $this->view = 'myVocabulary';
 
         $_SESSION['description'] = 'MyVocabularyController';
+        $_SESSION['fromUrl'] = 'myVocabulary';
 
         $this->checkLogin();
 
@@ -40,7 +41,7 @@ class MyVocabularyController extends Controller {
 
             if (isset($_POST['remove'])) {
                 MyVoc::removeFromMyVoc($_POST['remove'], $_SESSION['user_id']);
-                unset($_POST['remove'], $_SESSION['trans']['id']);
+                $_SESSION['trans'] = MyVoc::getMyVoc($_SESSION['user_id']);
             }
         }
     }
@@ -78,6 +79,6 @@ class MyVocabularyController extends Controller {
     }
 
     function clearController() {
-
+        unset($_SESSION['trans']);
     }
 }

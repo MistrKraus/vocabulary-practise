@@ -23,7 +23,7 @@ class RegistrationController extends Controller {
         }
 
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain($_SESSION['fromUrl']);
 
 //            if (isset($_POST['logout'])) {
 //                $this->logout();

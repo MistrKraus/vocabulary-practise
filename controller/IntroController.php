@@ -15,11 +15,12 @@ class IntroController extends Controller {
         $this->view = 'intro';
 
         $_SESSION['description'] = "IntroController";
+        $_SESSION['fromUrl'] = 'intro';
 
         $this->checkLogin();
 
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain('intro');
         }
     }
 

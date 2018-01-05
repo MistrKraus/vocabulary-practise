@@ -9,7 +9,7 @@
 class Categories {
 
     public static function getAllCategories() {
-        return Db::getAll("SELECT * FROM category");
+        return Db::getAll("SELECT * FROM category ORDER BY id_category");
     }
 
     public static function getCategoryId($category) {

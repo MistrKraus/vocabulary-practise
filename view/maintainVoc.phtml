@@ -1,7 +1,7 @@
 <form method="post">
     <div class="col-md-12">
         <div>Překlady ke schválení:</div>
-        <?php if (!isset($_SESSION['trans'])) { ?>
+        <?php if (!isset($_SESSION['trans']) || !isset($_SESSION['trans']) && Dictionary::getTranslationsCount() == 0) { ?>
             <div class="col-md-1"></div>
             <div class="col-md-11" style="font-style: italic">
                 - Žádné překlady ke schválení

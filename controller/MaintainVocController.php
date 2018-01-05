@@ -27,7 +27,7 @@ class maintainVocController extends Controller {
         $this->prepareData();
 
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain('MaintainVocController');
 
             if (isset($_POST['addT'])) {
                 Dictionary::approveTranslation($_POST['addT']);
@@ -37,6 +37,7 @@ class maintainVocController extends Controller {
             }
 
             if (isset($_POST['removeT'])) {
+                Dictionary::removeTranslation($_POST['removeT']);
                 unset($_SESSION['trans'][$_POST['removeT']]);
 
                 return;
