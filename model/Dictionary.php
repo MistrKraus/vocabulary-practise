@@ -25,6 +25,12 @@ class Dictionary {
         AND approved=1",null);
     }
 
+    public static function getTranslation($wordId1, $wordId2) {
+        return Db::getAll("SELECT id_trans FROM translation 
+              WHERE (word_id1=:id1 AND word_id2=:id2) OR (word_id1=:id4 AND word_id2=:id3)",
+            array(':id1'=>$wordId1, ':id2'=>$wordId2, ':id3'=>$wordId1, ':id4'=>$wordId2));
+    }
+
     // Vrati vsechny neschvalene preklady
     public static function getUnappTranslations() {
         return Db::getAll("SELECT t.id_trans AS id, w1.word AS w1, l1.id_lang AS L1,w2.word AS w2, l2.id_lang AS L2 FROM translation AS t 

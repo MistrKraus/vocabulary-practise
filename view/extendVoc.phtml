@@ -3,95 +3,130 @@ if (!isset($_SESSION['user_id'])) {
     require("view/loggedOnly.phtml");
 } else { ?>
     <form method="POST">
-        <div class="col-md-12" align="center">Jazyk</div>
-        <div class="col-md-5" align="right">
-            <div>
-                <select name="langs1" id="langs1">
-                    <?php foreach ($langs as $lang) : ?>
-                        <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
-                    <?php endforeach ?>
-                    <option name="lang1" value="-1">Jiný</option>
-                </select>
-            </div>
-            <div>
-                <input name="newLang1" id="input1" type="text"/>
-            </div>
-            <script>
-                var langs1 = document.getElementById("langs1");
-                var input1 = document.getElementById("input1");
-
-                input1.style.visibility = langs1.value == -1 ? "visible" : "hidden";
-
-                langs1.addEventListener("change", function () {
-                    console.log(this.value == -1 ? "visible" : "hidden");
-                    input1.style.visibility = this.value == -1 ? "visible" : "hidden";
-                });
-            </script>
+        <div class="col-md-12">
+            Vyberte jazyky:
         </div>
-        <div class="col-md-2" align="center">◄ | ►</div>
-        <div class="col-md-5" align="left">
-            <div>
-                <select name="langs2" id="langs2">
-                    <?php foreach ($langs as $lang) : ?>
-                        <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
-                    <?php endforeach; ?>
-                    <option name="lang2" value="-1">Jiný</option>
-                </select>
-            </div>
-            <div>
-                <input name="newLang2" id="input2" type="text">
-            </div>
-            <script>
-                var langs2 = document.getElementById("langs2");
-                var input2 = document.getElementById("input2");
 
-                input2.style.visibility = langs2.value == -1 ? "visible" : "hidden";
-
-                langs2.addEventListener("change", function () {
-                    console.log(this.value == -1 ? "visible" : "hidden");
-                    input2.style.visibility = this.value == -1 ? "visible" : "hidden";
-                });
-            </script>
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
+            <select name="langs1" id="langs1">
+                <?php foreach ($langs as $lang) : ?>
+                    <option name="lang1" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+                <?php endforeach ?>
+                <option name="lang1" value="-1">Jiný</option>
+            </select>
+            <input name="newLang1" id="input1" type="text"/>
         </div>
-        <div class="col-md-12" align="center">Slovo</div>
-        <div class="col-md-5" align="right">
+        <script>
+            var langs1 = document.getElementById("langs1");
+            var input1 = document.getElementById("input1");
+
+            input1.style.visibility = langs1.value == -1 ? "visible" : "hidden";
+
+            langs1.addEventListener("change", function () {
+                console.log(this.value == -1 ? "visible" : "hidden");
+                input1.style.visibility = this.value == -1 ? "visible" : "hidden";
+            });
+        </script>
+        <div class="col-md-2" style="font-size: small">
+            <?php if (isset($error[0])) { ?>
+                <span class="glyphicon glyphicon-pencil wrongInput"></span>
+            <?php echo $error[0]; } ?>
+        </div>
+        <div class="col-md-4">
+            <select name="langs2" id="langs2">
+                <?php foreach ($langs as $lang) : ?>
+                    <option name="lang2" value="<?=$lang['id_lang']?>"><?=$lang['lang']?></option>
+                <?php endforeach; ?>
+                <option name="lang2" value="-1">Jiný</option>
+            </select>
+            <input name="newLang2" id="input2" type="text"/>
+        </div>
+        <div class="col-md-1"></div>
+        <script>
+            var langs2 = document.getElementById("langs2");
+            var input2 = document.getElementById("input2");
+
+            input2.style.visibility = langs2.value == -1 ? "visible" : "hidden";
+
+            langs2.addEventListener("change", function () {
+                console.log(this.value == -1 ? "visible" : "hidden");
+                input2.style.visibility = this.value == -1 ? "visible" : "hidden";
+            });
+        </script>
+
+        <div class="col-md-12">
+            Slova
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
             <input name="word1" type="text">
         </div>
-        <div class="col-md-2" align="center">↔</div>
-        <div class="col-md-5" align="left">
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
             <input name="word2" type="text">
         </div>
-        <div class="col-md-5"></div>
-        <div class="col-md-2" align="center" style="margin-top: 10px">
+
+        <?php if (isset($error[1]) || isset($error[2])) { ?>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <?php if (isset($error[1])) { ?>
+                    <span class="glyphicon glyphicon-pencil wrongInput"></span>
+                <?php echo $error[1]; } ?>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <?php if (isset($error[2])) { ?>
+                    <span class="glyphicon glyphicon-pencil wrongInput"></span>
+                <?php echo $error[2]; } ?>
+            </div>
+        <?php } else { ?>
+            <div class="col-md-12">
+                <br>
+            </div>
+        <?php } ?>
+
+        <div class="col-md-12">
             Kategorie
         </div>
-        <div class="col-md-5" style="margin-top: 10px">
-            <select name="category" id="category">
-                <?php foreach ($categories as $cat) : ?>
-                    <option name="category" value="<?=$cat['id_category']?>"><?=$cat['name']?></option>
-                <?php endforeach; ?>
-            </select>
+        <div class="col-md-1"></div>
+        <div class="col-md-5" style="color: red">
+            <div>
+                <select style="color: black" name="category" id="category">
+                    <?php foreach ($categories as $cat) : ?>
+                        <option name="category" value="<?=$cat['id_category']?>"><?=$cat['name']?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div id="newCat">
+                <input type="text" name="newCat" style="color: black"> *
+            </div>
         </div>
-        <div class="col-md-7" style="font-style: italic; margin-top: 0.3em; color: red" id="text">Nepovinné pole*</div>
-        <div class="col-md-5" id="newCat" style="color: red">
-            <input type="text" name="newCat" style="color: black"> *
+        <div class="col-md-1"></div>
+        <div class="col-md-5 lbl">
+            <label>
+                <input type="checkbox" name="addToMyVoc">
+                Přidat do "Můj Slovník"
+            </label>
         </div>
-            <script>
-                var category = document.getElementById("category");
-                var newCat = document.getElementById("newCat");
-                var text = document.getElementById("text");
+        <div class="col-md-12" id="text" style="font-style: italic; margin-top: 0.3em; color: red" id="text">
+            *Nepovinné pole
+        </div>
+        <script>
+            var category = document.getElementById("category");
+            var newCat = document.getElementById("newCat");
+            var text = document.getElementById("text");
 
-                text.style.visibility = category.value == 1 ? "visible" : "hidden";
-                newCat.style.visibility = category.value == 1 ? "visible" : "hidden";
+            text.style.visibility = category.value == 1 ? "visible" : "hidden";
+            newCat.style.visibility = category.value == 1 ? "visible" : "hidden";
 
-                category.addEventListener("change", function () {
-                    console.log(this.value == 1 ? "visible" : "hidden");
-                    text.style.visibility = this.value == 1 ? "visible" : "hidden";
-                    newCat.style.visibility = this.value == 1 ? "visible" : "hidden";
-                });
-            </script>
-        <div class="col-md-10"></div>
-        <div class="col-md-2" style="margin-top: 10px" align="right">
+            category.addEventListener("change", function () {
+                console.log(this.value == 1 ? "visible" : "hidden");
+                text.style.visibility = this.value == 1 ? "visible" : "hidden";
+                newCat.style.visibility = this.value == 1 ? "visible" : "hidden";
+            });
+        </script>
+        <div class="col-md-12" align="right">
             <input class="btn" type="submit" value="Přidat">
         </div>
     </form>

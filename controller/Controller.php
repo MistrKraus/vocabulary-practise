@@ -133,6 +133,34 @@ abstract class Controller {
         }
     }
 
+    public function processText($text) {
+        $text = str_replace("Ě", "ě", $text);
+        $text = str_replace("Š", "š", $text);
+        $text = str_replace("Č", "č", $text);
+        $text = str_replace("Ř", "ř", $text);
+        $text = str_replace("Ž", "ž", $text);
+        $text = str_replace("Ý", "ý", $text);
+        $text = str_replace("Á", "á", $text);
+        $text = str_replace("Í", "í", $text);
+        $text = str_replace("É", "é", $text);
+        $text = str_replace("Ď", "ď", $text);
+        $text = str_replace("Ó", "ó", $text);
+        $text = str_replace("Ů", "ů", $text);
+        $text = str_replace("Ú", "ú", $text);
+        $text = str_replace("Ň", "ň", $text);
+        $text = str_replace("Ť", "ť", $text);
+        $text = str_replace("Ä", "ä", $text);
+        $text = str_replace("Ë", "ë", $text);
+        $text = str_replace("Ö", "ö", $text);
+        $text = str_replace("Ü", "ü", $text);
+        $text = str_replace("Ñ", "ñ", $text);
+
+        $newText = preg_replace("/[^a-zěščřžýáíéďóůúňťäëöü]/", "", $text);
+        $newText = ucfirst(mb_strtolower($newText, 'UTF-8'));
+
+        return $newText;
+    }
+
     // Hlavní metoda controlleru
     abstract function process($params);
 

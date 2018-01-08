@@ -27,7 +27,9 @@
             <?php endforeach ?>
         </select>
     </div>
-    <div class="col-md-12"><br></div>
+    <div class="col-md-12" align="right">
+        <?php if (isset($error[1])) echo $error[1]; else echo "<br>"; ?>
+    </div>
     <div class="col-md-12">Kolik slov chcete procvičit:</div>
     <div class="col-md-1"></div>
     <div class="col-md-5"><input type="number" style="width: 80%" name="transCount" min="1"
@@ -49,7 +51,9 @@
     <?php } else { ?>
         <div class="col-md-6"></div>
     <?php } ?>
-    <div class="col-md-10"></div>
+    <div class="col-md-10">
+        <?php if(isset($error[0])) echo $error[0]; ?>
+    </div>
     <div class="col-md-2" align="right">
         <input class="btn" type="submit" value="Procvičit" name="practise">
     </div>

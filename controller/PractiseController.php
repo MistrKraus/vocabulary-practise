@@ -22,8 +22,6 @@ class PractiseController extends Controller {
 
         $this->data['langs'] = Langs::getAllLangs();
 
-//        echo var_dump($this->header);
-
         if ($_POST) {
             $this->processMain('vocabulary');
 
@@ -53,7 +51,15 @@ class PractiseController extends Controller {
             isset($_POST['transCount']) && $_POST['transCount'] &&
             $_POST['langs1'] != $_POST['langs2'])) {
 
-            $this->addMessage("Zkontrolujte vyplnění formuláře.");
+            if ($_POST['langs1'] == $_POST['langs2']) {
+//                $this->addMessage("Jazyky nesmí být shodné");
+                $this->data['error'][1] = "Jazyky nesmí být shodné";
+                return;
+            }
+
+//            $this->addMessage("Zkontrolujte vyplnění formuláře.");
+            $this->data['error'][0] = "Zkontrolujte vyplnění formuláře";
+
 
             return;
         }
@@ -73,20 +79,23 @@ class PractiseController extends Controller {
         $_SESSION['langToId'] = $lang2;
 
         if (isset($_POST['customVoc'])) {
-            $_SESSION['cutomVoc'] = true;
+            $_SESSION['customVoc'] = true;
             $trans = MyVoc::getRandomTrans($transCount, $lang1, $lang2, $_SESSION['user_id']);
         } else {
             $trans = Dictionary::getRandomTrans($transCount, $lang1, $lang2);
         }
 
         if ($trans == -1 ) {
-            $this->addMessage("Chyba pri vytvareni testu");
+//            $this->addMessage("Chyba pri vytvareni testu");
+            $this->data['error'][0] = "Chyba při vytváření testu";
             return;
         }
 
         if (sizeof($trans) < $transCount && sizeof($trans) != 0) {
-            $this->addMessage("Ve slovníku není dostatečný počet překladů - Do testu bylo zařazeno "
-                . sizeof($trans) . " z $transCount překladů");
+//            $this->addMessage("Ve slovníku není dostatečný počet překladů - Do testu bylo zařazeno "
+//                . sizeof($trans) . " z $transCount překladů");
+            $this->data['error'][0] = "Ve slovníku není dostatečný počet překladů - Do testu bylo zařazeno "
+                . sizeof($trans) . " z $transCount překladů";
         }
 
         $_SESSION['trans'] = $trans;
@@ -100,24 +109,20 @@ class PractiseController extends Controller {
         $fromLangId = $_SESSION['langFromId'];
         $_SESSION['userTrans'] = array();
 
-//        echo var_dump($_POST);
-//        echo var_dump($trans);
-
         foreach ($trans as $tran) {
-//            echo "userTran" . $tran['id'];
-            $word = ucfirst($_POST["userTran" . $tran['id']]);
-
-            echo $word;
+            $word = $this->processText($_POST["userTran" . $tran['id']]);
 
             if ($tran['L1'] != $fromLangId) {
-                $leven = levenshtein(strtolower($tran['w1']), strtolower($word));
+                $leven = levenshtein($this->processText($tran['w1']),
+                    $this->processText($word));
                 $_SESSION['userTrans'][$tran['id']] = $word;
 
                 if (isset($_SESSION['cutomVoc']) && $_SESSION['cutomVoc']) {
                     MyVoc::addStrike([$tran['id']], $_SESSION['user_id'], 0);
                 }
             } else {
-                $leven = levenshtein(strtolower($tran['w2']), strtolower($word));
+                $leven = levenshtein($this->processText($tran['w2']),
+                    $this->processText($word));
                 $_SESSION['userTrans'][$tran['id']] = $word;
 
                 if (isset($_SESSION['cutomVoc']) && $_SESSION['cutomVoc']) {
@@ -125,8 +130,6 @@ class PractiseController extends Controller {
                     MyVoc::addStrike($tran['id'], $_SESSION['user_id'], 1);
                 }
             }
-
-            //echo $leven;
 
             $mistakesId[$tran['id']] = $leven;
         }
@@ -142,7 +145,7 @@ class PractiseController extends Controller {
         unset($_SESSION['langTo']);
         unset($_SESSION['langToId']);
 
-        unset($_SESSION['cutomVoc']);
+        unset($_SESSION['customVoc']);
         unset($_SESSION['trans']);
         unset($_SESSION['testState']);
         unset($_SESSION['userTrans']);

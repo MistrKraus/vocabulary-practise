@@ -20,23 +20,27 @@ class MyVocabularyController extends Controller {
 
         $this->checkLogin();
 
-        if (!isset($_SESSION['user_id'])) {
-            return;
-        }
-        $userId = $_SESSION['user_id'];
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
 
-        $_SESSION['fromUrl'] = 'myVocabulary';
-        $_SESSION['trans'] = MyVoc::getMyVoc($userId);
-        $this->data['langs'] = Langs::getAllLangs();//$this->getLangs();
+            $_SESSION['fromUrl'] = 'myVocabulary';
+            $_SESSION['trans'] = MyVoc::getMyVoc($userId);
+            $this->data['langs'] = Langs::getAllLangs();//$this->getLangs();
+        }
 
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain('myVocabulary');
+
+            if(!isset($_SESSION['user_id'])) {
+                return;
+            }
 
             if (isset($_POST['strike'])) {
                 $tranId = $_POST['strike'];
                 MyVoc::updateStrike($tranId, $_POST[$tranId]);
                 //var_dump($_SESSION['trans']);
                 $_SESSION['trans'] = MyVoc::getMyVoc($_SESSION['user_id']);
+                $this->data['saved'][$tranId] = true;
             }
 
             if (isset($_POST['remove'])) {

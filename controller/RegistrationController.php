@@ -25,10 +25,6 @@ class RegistrationController extends Controller {
         if ($_POST) {
             $this->processMain($_SESSION['fromUrl']);
 
-//            if (isset($_POST['logout'])) {
-//                $this->logout();
-//            }
-
             if (!$this->testPost()) {
                 return;
             }
@@ -40,7 +36,8 @@ class RegistrationController extends Controller {
             $passWord = User::getUserPassword($userName);
 
             if (strlen($passWord["password"]) > 0) {
-                $this->addMessage("Toto uživatelské jméno je bohužel obsazené.");
+//                $this->addMessage("Toto uživatelské jméno je bohužel obsazené.");
+                $this->data['error'][0] = "Uživatelské jméno je obsazené";
                 return;
             }
 
@@ -50,7 +47,7 @@ class RegistrationController extends Controller {
             $_SESSION['user_position'] = 2;
             $_SESSION['user_name'] = $userName;
 
-            $this->addMessage("Uživatel $userName úspěšně zaregistrován!");
+//            $this->addMessage("Uživatel $userName úspěšně zaregistrován!");
 
             $this->redirectBack();
         }
@@ -60,32 +57,41 @@ class RegistrationController extends Controller {
         $isOk = true;
 
         if (!(isset($_POST['userName']) && !empty($_POST['userName']))) {
-            $this->addMessage("'Uživatelské jméno' není vyplněné!");
+//            $this->addMessage("'Uživatelské jméno' není vyplněné!");
+            $this->data['error'][0] = "Povinné pole";
             $isOk = false;
         }
 
         if (!(isset($_POST['passW']) && !empty($_POST['passW']))) {
-            $this->addMessage("'Heslo' není vyplněné!");
+//            $this->addMessage("'Heslo' není vyplněné!");
+            $this->data['error'][1] = "Povinné pole";
             $isOk = false;
         }
 
         if (!(isset($_POST['passWA']) && !empty($_POST['passWA']))) {
-            $this->addMessage("'Heslo znovu' není vyplněné");
+//            $this->addMessage("'Heslo znovu' není vyplněné");
+            $this->data['error'][2] = "Povinné pole";
             $isOk = false;
         }
 
         if ($isOk) {
             if ($_POST['passW'] != $_POST['passWA']) {
-                $this->addMessage("Hesla se neshodují!");
+//                $this->addMessage("Hesla se neshodují!");
+                $this->data['error'][2] = "Hesla se neshodují";
                 return false;
             }
         }
 
+        $_SESSION['userName'] = $_POST['userName'];
+        $_SESSION['passW'] = $_POST['passW'];
+        $_SESSION['passWA'] = $_POST['passWA'];
+
         return $isOk;
     }
 
-    function clearController()
-    {
-
+    function clearController() {
+        unset($_SESSION['userName']);
+        unset($_SESSION['passW']);
+        unset($_SESSION['passWA']);
     }
 }

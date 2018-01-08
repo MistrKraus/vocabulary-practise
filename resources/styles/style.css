@@ -5,6 +5,7 @@ body {
 }
 
 h1 {
+    font-family: sans-serif;
     padding: 10px;
     font-size: 2em;
 }
@@ -31,7 +32,8 @@ label {
 }
 
 .logout input[type="submit"] {
-    background:none!important;
+    /*background:none!important;*/
+    background: transparent;
     color:inherit;
     border:none;
     padding:0!important;
@@ -40,14 +42,43 @@ label {
     cursor: pointer;
 }
 
-.leftMenuHover a:hover::before {
-    content:  "| ";
-    font-weight: bold;
+.lista a {
+    color: black;
+    padding: 5px;
+    padding-top: 2px;
+    text-decoration: none;
+}
+
+.backgroundRight a:hover::after {
+    color: #00cc00;
+    background-color: #00cc00;
+}
+
+.leftMenuHover {
+    background-color: transparent;
+    /*transition: all .25s ease-in;*/
+}
+
+.leftMenuHover:hover {
+    background-image: linear-gradient(to right,
+    transparent,
+    rgba(0, 0, 150, 0.7));
+
+    /*-webkit-transition: all 1s ease-out;*/
+    /*-moz-transition: all 1s ease-out;*/
+    /*-o-transition: all 1s ease-out;*/
+    /*transition: all 1s ease-out;*/
+}
+
+.rightMenuHover {
+    background-color: transparent;
+    transition: all .25s ease-in;
 }
 
 .rightMenuHover a:hover::after .logout {
-    content:  " |";
-    font-weight: bold;
+    background-image: linear-gradient(to left,
+    transparent,
+    #000099);
 }
 
 .tableMenu {
@@ -61,13 +92,6 @@ label {
 .menu {
     float: left;
     text-align: right;
-}
-
-.lista a {
-    color: black;
-    padding: 5px;
-    padding-top: 2px;
-    text-decoration: none;
 }
 
 .textHref {
@@ -92,6 +116,23 @@ label {
     color: #000099;
 }
 
-.content {
+.wrongInput {
+    color: #FF2200;
+    margin-left: 0.25em;
+}
 
+.save {
+    animation: color_change 5s;
+    -webkit-animation: color_change 5s;
+    color: transparent;
+}
+
+@-webkit-keyframes color_change {
+    from { color: #00cc00 }
+    to { color: transparent }
+}
+
+@keyframes color_change {
+    from { color: #00cc00}
+    to { color: transparent}
 }

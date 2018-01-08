@@ -25,9 +25,6 @@ class LoginController extends Controller
 
         if ($_POST) {
             $this->processMain('vocabulary');
-//            if (isset($_POST['logout'])) {
-//                $this->logout();
-//            }
 
             if (!$this->testPost()) {
                 return;
@@ -39,7 +36,8 @@ class LoginController extends Controller
             $password = User::getUserPassword($userName)['password'];
 
             if (strlen($password) == 0) {
-                $this->addMessage("Chybné uživatelské jméno!");
+//                $this->addMessage("Chybné uživatelské jméno!");
+                $this->data['error'][0]="Chybné uživatelské jméno";
                 return;
             }
 
@@ -53,7 +51,8 @@ class LoginController extends Controller
                 $this->redirectBack();
             } else {
                 //$_SESSION['user_id'] = 0;
-                $this->addMessage("Chybné heslo");
+//                $this->addMessage("Chybné heslo");
+                $this->data['error'][1]="Chybné heslo";
             }
         }
     }
@@ -66,20 +65,25 @@ class LoginController extends Controller
         $isOk = true;
 
         if (!(isset($_POST['userName']) && !empty($_POST['userName']))) {
-            $this->addMessage("'Uživatelské jméno' není vyplněné!");
+//            $this->addMessage("'Uživatelské jméno' není vyplněné!");
+            $this->data['error'][0]="Povinné pole";
             $isOk = false;
         }
 
         if (!(isset($_POST['passW']) && !empty($_POST['passW']))) {
-            $this->addMessage("'Heslo' není vyplněné!");
+//            $this->addMessage("'Heslo' není vyplněné!");
+            $this->data['error'][1]="Povinné pole";
             return false;
         }
+
+        $_SESSION['userName'] = $_POST['userName'];
+        $_SESSION['passW'] = $_POST['passW'];
 
         return $isOk;
     }
 
-    function clearController()
-    {
-        // TODO: Implement clearController() method.
+    function clearController() {
+        unset($_SESSION['userName']);
+        unset($_SESSION['passW']);
     }
 }
