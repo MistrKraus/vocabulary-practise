@@ -116,7 +116,7 @@ class ExtendVocController extends Controller {
                         return;
                     }
 
-                    $category = $this->processText($_POST['category']);
+                    $category = $_POST['category'];
 
                     $data = array();
                     $data['lang1'] = $lang1;
@@ -133,7 +133,7 @@ class ExtendVocController extends Controller {
                     $_SESSION['addedTrans'] = $data;
 
                     // přidá novou kategorii do databáze
-                    if ($_POST['category'] == 1 && isset($_POST['newCat']) && $_POST['newCat']) {
+                    if ($category == 1 && isset($_POST['newCat']) && $_POST['newCat']) {
                         $category = $_POST['newCat'];
 
                         if (Categories::getCategoryId($category) == NULL) {
@@ -153,11 +153,11 @@ class ExtendVocController extends Controller {
                     if ($id1 != $id2 && ($id1 != -1 || $id2 != -1) && $lang1 != $lang2) {
                         Dictionary::addTranslation($id1,$id2, $_SESSION['user_id'], $category, $_SESSION['user_position']);
 
-                        echo "$id1 $id2";
+//                        echo "$id1 $id2 . $category";
 
                         if (isset($_POST['addToMyVoc'])) {
                             $newWordId = Dictionary::getTranslation($id1, $id2);
-                            var_dump($newWordId);
+//                            var_dump($newWordId);
                             foreach ($newWordId as $id) {
 //                                echo "Id: " . $id['id_trans'];
                                 MyVoc::addToMyVoc($id['id_trans'], $_SESSION['user_id']);

@@ -89,12 +89,12 @@ if (!isset($_SESSION['user_id'])) {
         <div class="col-md-12">
             Kategorie
         </div>
-        <div class="col-md-1"></div>
+        <div class="col-md-1"><?php// var_dump($categories);?></div>
         <div class="col-md-5" style="color: red">
             <div>
                 <select style="color: black" name="category" id="category">
                     <?php foreach ($categories as $cat) : ?>
-                        <option name="category" value="<?=$cat['id_category']?>"><?=$cat['name']?></option>
+                        <option value="<?=$cat['id_category']?>"><?=$cat['name']?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
