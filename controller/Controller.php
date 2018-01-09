@@ -61,7 +61,7 @@ abstract class Controller {
 
     // Přesměruje na dané URL
     public function redirect($url) {
-        header("Location: /semestralniPrace/$url");
+        header("Location: /semestralniPrace/?Controller=$url");
         header("Connection: close");
         exit;
     }

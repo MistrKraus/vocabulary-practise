@@ -45,11 +45,11 @@
         <div class="col-xs-12 col-md-12 backgroundColor"><br></div>
         <div class="col-xs-12 col-md-12"><br></div>
         <div class="col-xs-12 col-md-2 menu lista">
-            <div class="verticalLineRight leftMenuHover"><a href="intro">Úvod</a></div>
-            <div class="verticalLineRight leftMenuHover"><a href="vocabulary">Slovník</a></div>
-            <div class="verticalLineRight leftMenuHover"><a href="practise">Procvičování</a></div>
-            <div class="verticalLineRight leftMenuHover"><a href="myVocabulary">Můj Slovník</a></div>
-            <div class="verticalLineRight leftMenuHover"><a href="extendVoc">Rozšířit Slovník</a></div>
+            <div class="verticalLineRight leftMenuHover"><a href="?Controller=intro">Úvod</a></div>
+            <div class="verticalLineRight leftMenuHover"><a href="?Controller=vocabulary">Slovník</a></div>
+            <div class="verticalLineRight leftMenuHover"><a href="?Controller=practise">Procvičování</a></div>
+            <div class="verticalLineRight leftMenuHover"><a href="?Controller=myVocabulary">Můj Slovník</a></div>
+            <div class="verticalLineRight leftMenuHover"><a href="?Controller=extendVoc">Rozšířit Slovník</a></div>
             <?php if (isset($_SESSION['user_position']) && $_SESSION['user_position'] == 1) { ?>
                 <div class="verticalLineRight leftMenuHover"><a href="maintainVoc">Spravovat Slovník</a></div>
             <?php } ?>
