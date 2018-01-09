@@ -35,6 +35,7 @@ class RedirectController extends Controller {
         return $splitedPath;
     }
 
+    // zpracuje parametry, připraví kontroler a přesměruje
     function process($params) {
         $parsedURL = $this->parseURL($params[0]);
 
