@@ -66,6 +66,7 @@ abstract class Controller {
         exit;
     }
 
+    // Přesměruje na předchozí URL
     public function redirectBack() {
         if (isset($_SESSION['fromUrl'])) {
             $url = $_SESSION['fromUrl'];
@@ -76,29 +77,33 @@ abstract class Controller {
         }
     }
 
-    // Přesměruje na login a zapíše do SESSION původní pozici
+    // Přesměruje na login a zapíše do původní URL
     public function redirectToLogin($fromUrl) {
         $_SESSION['fromUrl'] = $fromUrl;
         $this->redirect('login');
     }
 
+    // Přesmruje na registraci a zapíše původní URL
     public function redirectToRegistration($fromUrl) {
         $_SESSION['fromUrl'] = $fromUrl;
         $this->redirect('registration');
     }
 
+    // Odhlásí uživatele a přesměruje na původní URL
     public function logoutAndRedirect() {
         $this->logout();
-        $this->redirectBack('intro');
+        $this->redirectBack();
     }
 
+    // Odhlásí uživatele
     public function logout() {
         unset($_SESSION['user_id']);
         unset($_SESSION['user_position']);
         unset($_SESSION['user_name']);
     }
 
-    public function processMain($fromUrl) {
+    // zpracuje POST z kostry html
+    public function processMain() {
         $fromUrl = $_SESSION['fromUrl'];
 
         if (isset($_POST['login'])) {
@@ -123,6 +128,7 @@ abstract class Controller {
         }
     }
 
+    // zkontroluje, zda přihlášený uživatel existuje, popřípadě jej odhlásí
     public function checkLogin() {
         if (isset($_SESSION['user_id'])) {
             $user = User::getUser($_SESSION['user_id']);
@@ -133,6 +139,7 @@ abstract class Controller {
         }
     }
 
+    // Zpracuje text do standardního formátu
     public function processText($text) {
         $text = str_replace("Ě", "ě", $text);
         $text = str_replace("Š", "š", $text);
@@ -155,7 +162,8 @@ abstract class Controller {
         $text = str_replace("Ü", "ü", $text);
         $text = str_replace("Ñ", "ñ", $text);
 
-        $newText = preg_replace("/[^a-zěščřžýáíéďóůúňťäëöü]/", "", $text);
+        $newText = preg_replace("/[^a-zěščřžýáíéďóůúňťäëöüA-Z]/", "", $text);
+
         $newText = ucfirst(mb_strtolower($newText, 'UTF-8'));
 
         return $newText;

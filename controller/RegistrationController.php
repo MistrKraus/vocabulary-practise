@@ -18,13 +18,16 @@ class RegistrationController extends Controller {
 
         $this->checkLogin();
 
+        // pokud je uživatel přihlášený, je přesměrován na úvodní stranu
         if (isset($_SESSION['user_id'])) {
             $this->redirect('intro');
         }
 
+        // zpracuje vstup
         if ($_POST) {
-            $this->processMain($_SESSION['fromUrl']);
+            $this->processMain();
 
+            // zkonroluje správnost vstupu
             if (!$this->testPost()) {
                 return;
             }
@@ -41,6 +44,7 @@ class RegistrationController extends Controller {
                 return;
             }
 
+            // zaregustruje uživatele
             User::registerUser($userName, $passW);
 
             $_SESSION['user_id'] = Db::getLastId();
@@ -49,10 +53,12 @@ class RegistrationController extends Controller {
 
 //            $this->addMessage("Uživatel $userName úspěšně zaregistrován!");
 
+            // přesměruje na původní adresu
             $this->redirectBack();
         }
     }
 
+    // zkontroluje vstup
     function testPost() {
         $isOk = true;
 
@@ -89,6 +95,7 @@ class RegistrationController extends Controller {
         return $isOk;
     }
 
+    // vymaže data ze Session
     function clearController() {
         unset($_SESSION['userName']);
         unset($_SESSION['passW']);

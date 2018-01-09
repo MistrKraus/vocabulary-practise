@@ -19,12 +19,11 @@ class LoginController extends Controller
 
         $this->checkLogin();
 
-        if (isset($_SESSION['user_id'])) {
+        if (isset($_SESSION['user_id']))
             $this->redirect('intro');
-        }
 
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain();
 
             if (!$this->testPost()) {
                 return;
@@ -33,6 +32,7 @@ class LoginController extends Controller
             $userName = $_POST['userName'];
             $passW = $_POST['passW'];
 
+            // zkontroluje, zda uživatelské jméno existuje
             $password = User::getUserPassword($userName)['password'];
 
             if (strlen($password) == 0) {
@@ -41,6 +41,7 @@ class LoginController extends Controller
                 return;
             }
 
+            // přihlásí uživatele
             if (password_verify($passW, $password)) {
                 $user = User::logIn($userName);
 
@@ -57,6 +58,7 @@ class LoginController extends Controller
         }
     }
 
+    // Zkontroluje vstupní data
     function testPost() {
         if (isset($_SESSION['user_id'])) {
             return false;

@@ -20,8 +20,6 @@ class ErrorController extends Controller {
         $_SESSION['description'] = "ErrorController";
     }
 
-    function clearController()
-    {
-        // TODO: Implement clearController() method.
+    function clearController() {
     }
 }

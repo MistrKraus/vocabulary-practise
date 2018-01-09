@@ -20,6 +20,7 @@ class MyVocabularyController extends Controller {
 
         $this->checkLogin();
 
+        // pokud je uživatel přihlášený, načte data
         if (isset($_SESSION['user_id'])) {
             $userId = $_SESSION['user_id'];
 
@@ -28,13 +29,15 @@ class MyVocabularyController extends Controller {
             $this->data['langs'] = Langs::getAllLangs();//$this->getLangs();
         }
 
+        // zpracuje vstup
         if ($_POST) {
-            $this->processMain('myVocabulary');
+            $this->processMain();
 
             if(!isset($_SESSION['user_id'])) {
                 return;
             }
 
+            // upraví hodnotu strike
             if (isset($_POST['strike'])) {
                 $tranId = $_POST['strike'];
                 MyVoc::updateStrike($tranId, $_POST[$tranId]);
@@ -43,6 +46,7 @@ class MyVocabularyController extends Controller {
                 $this->data['saved'][$tranId] = true;
             }
 
+            // odstraní překlad z "Můj Slovník"
             if (isset($_POST['remove'])) {
                 MyVoc::removeFromMyVoc($_POST['remove'], $_SESSION['user_id']);
                 $_SESSION['trans'] = MyVoc::getMyVoc($_SESSION['user_id']);
@@ -50,6 +54,7 @@ class MyVocabularyController extends Controller {
         }
     }
 
+    // načte jazyky
     function getLangs() {
         $langs = Langs::getAllLangs();
         $trans = $_SESSION['trans'];

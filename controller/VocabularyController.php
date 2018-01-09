@@ -20,24 +20,27 @@ class VocabularyController extends Controller {
 
         $this->checkLogin();
 
+        // načte data
         $this->prepareData();
 
+        // zpracuje vstup
         if ($_POST) {
-            $this->processMain('vocabulary');
-
-            //echo "hey?<br>";
+            $this->processMain();
 
             if (isset($_SESSION['user_id'])) {
+                // přidá překlad do "Můj Slovník"
                 if (isset($_POST['add'])) {
                     MyVoc::addToMyVoc($_POST['add'], $_SESSION['user_id']);
                     return;
                 }
 
+                // odebere překlad z "Můj Slovník"
                 if (isset($_POST['remove'])) {
                     MyVoc::removeFromMyVoc($_POST['remove'], $_SESSION['user_id']);
                     return;
                 }
 
+                // odebere překlad z databáze
                 if (isset($_POST['removeTrans']) && $_SESSION['user_position']) {
                     $tranId = $_POST['removeTrans'];
                     Dictionary::removeTranslation($tranId);
@@ -47,6 +50,7 @@ class VocabularyController extends Controller {
         }
     }
 
+    // načte data
     function prepareData() {
         //$ws = Vocabulary::getAllWords();
         $langs = Langs::getAllLangs();

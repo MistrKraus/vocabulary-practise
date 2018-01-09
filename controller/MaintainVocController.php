@@ -19,6 +19,7 @@ class maintainVocController extends Controller {
 
         $this->checkLogin();
 
+        // zkonstroluje, zda je uživatel administrátor
         if ($_SESSION['user_position'] != 1) {
             $this->addMessage("To se nedělá! Fuj!");
             $this->redirect('intro');
@@ -27,7 +28,7 @@ class maintainVocController extends Controller {
         $this->prepareData();
 
         if ($_POST) {
-            $this->processMain('MaintainVocController');
+            $this->processMain();
 
             if (isset($_POST['addT'])) {
                 Dictionary::approveTranslation($_POST['addT']);
@@ -59,6 +60,7 @@ class maintainVocController extends Controller {
         }
     }
 
+    // načte potřebná data z databáze
     function prepareData() {
         $unappTranslations = Dictionary::getUnappTranslations();
         $langs = Langs::getAllLangs();
@@ -95,6 +97,7 @@ class maintainVocController extends Controller {
         } endforeach;
     }
 
+    // získá jazyky bez slov
     function getLangsWithnoutWords($langs) {
         $noLangs = array(array());
 
@@ -118,6 +121,8 @@ class maintainVocController extends Controller {
 
         return $noLangs;
     }
+
+    // vyčistí session
     function clearController() {
         unset($_SESSION['trans']);
         unset($_SESSION['words']);

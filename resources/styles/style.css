@@ -2,6 +2,7 @@ body {
     font-family: "Calibri";
     font-size: 1.6em;
     background-color: lightyellow;
+    /*background-color: #DAFFFF;*/
 }
 
 h1 {
@@ -20,6 +21,17 @@ input {
 
 label {
     font-weight: normal;
+}
+
+.logo a:hover {
+    background-image: linear-gradient(to top,
+    #DAFFFF,
+    lightyellow);
+}
+
+.backgroundColor {
+    /*background-color: lightyellow;*/
+    background-color: white;
 }
 
 .btn {
@@ -62,7 +74,7 @@ label {
 .leftMenuHover:hover {
     background-image: linear-gradient(to right,
     transparent,
-    rgba(0, 0, 150, 0.7));
+    rgba(0, 0, 150, 0.5));
 
     /*-webkit-transition: all 1s ease-out;*/
     /*-moz-transition: all 1s ease-out;*/
@@ -78,13 +90,13 @@ label {
 .rightMenuHover a:hover::after .logout {
     background-image: linear-gradient(to left,
     transparent,
-    #000099);
+    rgba(0, 0, 150, 0.5));
 }
 
 .tableMenu {
     float: left;
     width: 150px;
-    background-color: lightslategray;
+    /*background-color: lightslategray;*/
     text-align: right;
     alignment: right;
 }
@@ -113,7 +125,7 @@ label {
 }
 
 .horizontalLine {
-    color: #000099;
+    border-bottom: 1px solid #000099;
 }
 
 .wrongInput {

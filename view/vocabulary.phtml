@@ -38,6 +38,8 @@
                             <td><button type="submit" class="btn btn-danger" name="remove" value="<?=$tranId?>">Odebrat</button></td>
                     <?php } if ($_SESSION['user_position'] == 1 && empty(MyVoc::getSomebodiesTranIdById($tranId))) { ?>
                             <td><button type="submit" class="btn btn-danger" name="removeTrans" value="<?=$tranId?>">Odstranit</button></td>
+                    <?php } else { ?>
+                                <td>-</td>
                 <?php } } } }?>
                 </tr>
                 <?php endforeach; ?>

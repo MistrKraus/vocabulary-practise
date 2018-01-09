@@ -10,11 +10,6 @@ class Dictionary {
 
     // Vrati vsechny schvalene preklady
     public static function getAllTraslations() {
-//        return Db::getAll("SELECT * FROM `translation`
-//            INNER JOIN (word INNER JOIN language ON language.id_lang=word.lang_id)
-//             ON translation.word_id1=word.id_word AND approved>0", null);
-//            //INNER JOIN language ON word.lang_id = language.id_lang", null);
-
         return Db::getAll("SELECT t.id_trans AS id, w1.word AS w1, l1.id_lang AS L1,
                 w2.word AS w2, l2.id_lang AS L2, cat.name AS category, t.user_id FROM translation AS t 
             JOIN category AS cat on cat.id_category=t.category_id
@@ -25,10 +20,11 @@ class Dictionary {
         AND approved=1",null);
     }
 
+    // vrátí konkrétní překlad
     public static function getTranslation($wordId1, $wordId2) {
         return Db::getAll("SELECT id_trans FROM translation 
-              WHERE (word_id1=:id1 AND word_id2=:id2) OR (word_id1=:id4 AND word_id2=:id3)",
-            array(':id1'=>$wordId1, ':id2'=>$wordId2, ':id3'=>$wordId1, ':id4'=>$wordId2));
+              WHERE (word_id1=:id1 AND word_id2=:id2) OR (word_id1=:id3 AND word_id2=:id4)",
+            array(':id1'=>$wordId1, ':id2'=>$wordId2, ':id3'=>$wordId2, ':id4'=>$wordId1));
     }
 
     // Vrati vsechny neschvalene preklady
@@ -44,12 +40,6 @@ class Dictionary {
     // Vratio vsechna slova bez prekladu
     public static function getUntransWords() {
         $words = Vocabulary::getWordsWithLangs();
-//        $trans = Db::getAll("SELECT w1.id_word AS w1_id, w1.word AS w1_word, L1.id_lang AS L1_id, L1.lang AS L1_lang,
-//                                  w2.id_word AS w2_id, w2.word AS w2_word, L2.id_lang AS L2_id, L2.lang AS L2_lang FROM translation AS t
-//            JOIN word AS w1 on w1.id_word=t.word_id1
-//            JOIN word AS w2 on w2.id_word=t.word_id2
-//            JOIN language AS L1 on w1.lang_id=L1.id_lang
-//            JOIN language AS L2 on w2.lang_id=L2.id_lang", null);
 
         $untransW = array(array());
 
@@ -63,21 +53,6 @@ class Dictionary {
         } endforeach;
 
         return $untransW;
-
-//        foreach ($words as $word) : {
-//            $wordId = $word['id_word'];
-//            $add = true;
-//            foreach ($trans as $tran) : {
-//                if ($wordId == $tran['word_id1'] || $wordId == $tran['word_id2']) {
-//                    $add = false;
-//                    break;
-//                }
-//            } endforeach;
-//
-//            if ($add) {
-//
-//            }
-//        }
     }
 
     // vrati vsechna preklady mezi dvema jazyky
@@ -96,7 +71,7 @@ class Dictionary {
             array('lang1'=>$lang1Id, 'lang2'=>$lang2Id, 'lang3'=>$lang1Id, 'lang4'=>$lang2Id));
     }
 
-    // vrati nahodny pocet prekladu mezi dvema jazyky
+    // vrati náhodné překlady prekladu mezi dvema jazyky
     public static function getRandomTrans($transCount, $lang1Id, $lang2Id) {
         if ($lang1Id == $lang2Id) {
             return -1;
@@ -128,22 +103,27 @@ class Dictionary {
     // prida preklad - pokud jej pridava administrator, je pridan automaticky
     public static function addTranslation($word1Id, $word2Id, $user, $catId, $userPos) {
         if ($userPos == 1) {
-            return $word1Id == $word2Id ? -1 : Db::insert("translation",
+            $word1Id == $word2Id ? -1 : Db::insert("translation",
                 array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user, 'category_id'=>$catId, 'approved'=>1));
+            return;
         }
-        return $word1Id == $word2Id ? -1 : Db::insert("translation",
+        $word1Id == $word2Id ? -1 : Db::insert("translation",
             array('word_id1'=>$word1Id, 'word_id2'=>$word2Id, 'user_id'=>$user, 'category_id'=>$catId));
+        return;
     }
 
+    // zapíše schválení překladu
     public static function approveTranslation($transId) {
 //        Db::update("translation", array('approved'=>1), "WHERE `id_trans`= ?", array('id_trans'=>$transId));
         Db::query("UPDATE translation SET approved=:app WHERE id_trans=:id", array(':app'=>1, ':id'=>$transId));
     }
 
+    // odstraní překlad
     public static function removeTranslation($transId) {
         return Db::query("DELETE FROM translation WHERE id_trans=:id_trans", array(':id_trans'=>$transId));
     }
 
+    // vrátí počet překladů
     public static function getTranslationsCount() {
         return Db::count("translation");
     }

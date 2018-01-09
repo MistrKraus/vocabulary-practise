@@ -8,33 +8,28 @@
 
 class Langs {
 
+    // vrátí všechny překlady
     public static function getAllLangs() {
         $fromDb = Db::getAll("SELECT * FROM language");
-
-        // works
-//        foreach ($fromDb as $item) :
-//            echo $item['id_lang'] . " - " . $item['lang'];
-//        endforeach;
 
         return $fromDb;
     }
 
+    // vrátí id jazyka
     public static function getLangID($lang) {
         $fromDb = Db::getFirstRow("SELECT id_lang FROM language WHERE lang=:lang",
             array(':lang'=>$lang));
 
-//        foreach ($fromDb as $item) :
-//            return $item['id_lang'];
-//        endforeach;
-
         return $fromDb['id_lang'];
     }
 
+    // vrátí název jazyka v asociativním poli
     public static function getLang($langId) {
         return Db::getFirstRow("SELECT lang FROM language WHERE id_lang=:lang",
             array(':lang'=>$langId));
     }
 
+    // zapíše jazyk
     public static function addLang($lang) {
         $fromDb = self::getAllLangs();
 
@@ -46,6 +41,7 @@ class Langs {
         return Db::insert("language", array('lang'=>$lang));
     }
 
+    // odstraní jazyk
     public static function removeLang($langId) {
         Db::query("DELETE FROM language WHERE id_lang=:id", array(':id'=>$langId));
     }

@@ -23,8 +23,9 @@ class ExtendVocController extends Controller {
         $this->data['categories'] = Categories::getAllCategories();
 
         if ($_POST) {
-            $this->processMain('extendVoc');
+            $this->processMain();
 
+            // konstrola vstupu jazyků
             if (isset($_POST['langs1']) && $_POST['langs1'] &&
                 isset($_POST['langs2']) && $_POST['langs2']) {
 
@@ -90,7 +91,7 @@ class ExtendVocController extends Controller {
                     return;
                 }
 
-                // pridani slov a prekladu
+                // kontrola slov, pridani slov a prekladu
                 if (isset($_POST['word1']) && $_POST['word1'] &&
                     isset($_POST['word2']) && $_POST['word2']) {
                     $word1 = $this->processText($_POST['word1']);
@@ -124,12 +125,14 @@ class ExtendVocController extends Controller {
                     $data['word2'] = $word2;
                     $data['category'] = $category;
 
+                    // pri obnoveni stranky zabrani znovu uložení do databáze
                     if (isset($_SESSION['addedTrans']) && ($_SESSION['addedTrans'] == $data)) {
                         unset($_SESSION['addedTrans']);
                         return;
                     }
                     $_SESSION['addedTrans'] = $data;
 
+                    // přidá novou kategorii do databáze
                     if ($_POST['category'] == 1 && isset($_POST['newCat']) && $_POST['newCat']) {
                         $category = $_POST['newCat'];
 
@@ -139,15 +142,18 @@ class ExtendVocController extends Controller {
                     }
 
                     $id1 = Vocabulary::addWord($word1, $lang1); //Vocabulary::getWordID($word1, $lang1);
-                    if ($id1 == 0) Vocabulary::getWordID($word1, $lang1);
+                    if ($id1 == 0) $id1 = Vocabulary::getWordID($word1, $lang1);
                     //echo $word1 . " přidan<br>";
 
                     $id2 = Vocabulary::addWord($word2, $lang2); //Vocabulary::getWordID($word2, $lang2);
-                    if ($id2 == 0) Vocabulary::getWordID($word2, $lang2);
+                    if ($id2 == 0) $id2 = Vocabulary::getWordID($word2, $lang2);
                     //echo $word2 . " přidan<br>";
 
+                    // přidá překlad do databáze
                     if ($id1 != $id2 && ($id1 != -1 || $id2 != -1) && $lang1 != $lang2) {
                         Dictionary::addTranslation($id1,$id2, $_SESSION['user_id'], $category, $_SESSION['user_position']);
+
+                        echo "$id1 $id2";
 
                         if (isset($_POST['addToMyVoc'])) {
                             $newWordId = Dictionary::getTranslation($id1, $id2);
@@ -171,6 +177,7 @@ class ExtendVocController extends Controller {
         }
     }
 
+    // Vyčistí Session
     function clearController() {
         unset($_SESSION['addedTrans']);
     }

@@ -20,13 +20,11 @@ class IntroController extends Controller {
         $this->checkLogin();
 
         if ($_POST) {
-            $this->processMain('intro');
+            $this->processMain();
         }
     }
 
-    function clearController()
-    {
+    function clearController() {
         //echo "cistim intro";
-        // TODO: Implement clearController() method.
     }
 }

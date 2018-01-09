@@ -22,19 +22,23 @@ class PractiseController extends Controller {
 
         $this->data['langs'] = Langs::getAllLangs();
 
+        // zpracuje vstup
         if ($_POST) {
-            $this->processMain('vocabulary');
+            $this->processMain();
 
+            // vygeneruje test
             if (isset($_POST['practise'])) {
                 $this->generateTest();
                 return;
             }
 
+            // zkonstroluje test
             if (isset($_POST['check'])) {
                 $this->checkTest();
                 return;
             }
 
+            // vymaže data z testu
             if (isset($_POST['new'])) {
                 unset($_SESSION['testState']);
                 $this->clearController();
@@ -45,7 +49,10 @@ class PractiseController extends Controller {
         }
     }
 
+    // vygeneruje test
     function generateTest() {
+        unset($_SESSION['userTrans']);
+
         if (!(isset($_POST['langs1']) && $_POST['langs1'] &&
             isset($_POST['langs2']) && $_POST['langs2'] &&
             isset($_POST['transCount']) && $_POST['transCount'] &&
@@ -60,21 +67,16 @@ class PractiseController extends Controller {
 //            $this->addMessage("Zkontrolujte vyplnění formuláře.");
             $this->data['error'][0] = "Zkontrolujte vyplnění formuláře";
 
-
             return;
         }
 
         $lang1 = $_POST['langs1'];
         $lang2 = $_POST['langs2'];
-//        $_SESSION['transCount'] = $_POST['transCount'];
         $transCount = $_POST['transCount'];
 
-        //$this->data['langFrom'] = Langs::getLang($lang1)['lang'];
         $_SESSION['langFrom'] = Langs::getLang($lang1)['lang'];
         $_SESSION['langFromId'] = $lang1;
 
-        //$this->data['langTo'] = Langs::getLang($lang2)['lang'];
-        //$this->data['langToId'] = $lang2;
         $_SESSION['langTo'] = Langs::getLang($lang2)['lang'];
         $_SESSION['langToId'] = $lang2;
 
@@ -102,6 +104,7 @@ class PractiseController extends Controller {
         $_SESSION['testState'] = 1;
     }
 
+    // zkontroluje test
     function checkTest() {
         $mistakesId = array();
 
@@ -138,6 +141,7 @@ class PractiseController extends Controller {
         $_SESSION['testState'] = 2;
     }
 
+    // vymaže data z Sessionn
     function clearController() {
         unset($_SESSION['langFrom']);
         unset($_SESSION['langFromId']);
